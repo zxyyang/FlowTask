@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>12</integer>
+	<key>logs</key>
+	<dict>
+		<key>E0070C9A-AD9F-4CF7-BB1E-DF3890026561</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>E0070C9A-AD9F-4CF7-BB1E-DF3890026561.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>S</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>0</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>FlowTask project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>FlowTask</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Cleaning project FlowTask with scheme FlowTask and configuration Release</string>
+			<key>timeStartedRecording</key>
+			<real>789315383.05073202</real>
+			<key>timeStoppedRecording</key>
+			<real>789315383.24112296</real>
+			<key>title</key>
+			<string>Cleaning project FlowTask with scheme FlowTask and configuration Release</string>
+			<key>uniqueIdentifier</key>
+			<string>E0070C9A-AD9F-4CF7-BB1E-DF3890026561</string>
+		</dict>
+		<key>E2CE9861-529E-4C6A-9252-C6E376335C60</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>E2CE9861-529E-4C6A-9252-C6E376335C60.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>S</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>0</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>FlowTask project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>FlowTask</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Cleaning project FlowTask with scheme FlowTask and configuration Release</string>
+			<key>timeStartedRecording</key>
+			<real>789315345.31251204</real>
+			<key>timeStoppedRecording</key>
+			<real>789315345.49472904</real>
+			<key>title</key>
+			<string>Cleaning project FlowTask with scheme FlowTask and configuration Release</string>
+			<key>uniqueIdentifier</key>
+			<string>E2CE9861-529E-4C6A-9252-C6E376335C60</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

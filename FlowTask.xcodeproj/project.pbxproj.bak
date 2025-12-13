@@ -1,0 +1,1176 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07FD1A0E2EED629A00CBC0EE /* DailySummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F22EED629A00CBC0EE /* DailySummaryService.swift */; };
+		07FD1A0F2EED629A00CBC0EE /* TaskRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DB2EED629A00CBC0EE /* TaskRowView.swift */; };
+		07FD1A102EED629A00CBC0EE /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DA2EED629A00CBC0EE /* TaskListView.swift */; };
+		07FD1A112EED629A00CBC0EE /* Subtask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FA2EED629A00CBC0EE /* Subtask.swift */; };
+		07FD1A122EED629A00CBC0EE /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F02EED629A00CBC0EE /* TaskRepository.swift */; };
+		07FD1A132EED629A00CBC0EE /* FlowTaskApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E12EED629A00CBC0EE /* FlowTaskApp.swift */; };
+		07FD1A142EED629A00CBC0EE /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A042EED629A00CBC0EE /* SharedComponents.swift */; };
+		07FD1A152EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A002EED629A00CBC0EE /* NoteRepositoryProtocol.swift */; };
+		07FD1A162EED629A00CBC0EE /* FocusSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F82EED629A00CBC0EE /* FocusSession.swift */; };
+		07FD1A172EED629A00CBC0EE /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EC2EED629A00CBC0EE /* DataContainer.swift */; };
+		07FD1A182EED629A00CBC0EE /* MacTaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E72EED629A00CBC0EE /* MacTaskListView.swift */; };
+		07FD1A192EED629A00CBC0EE /* InspirationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D42EED629A00CBC0EE /* InspirationView.swift */; };
+		07FD1A1A2EED629A00CBC0EE /* MacCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E32EED629A00CBC0EE /* MacCategoryView.swift */; };
+		07FD1A1B2EED629A00CBC0EE /* SyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FB2EED629A00CBC0EE /* SyncStatus.swift */; };
+		07FD1A1C2EED629A00CBC0EE /* TaskEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D82EED629A00CBC0EE /* TaskEditView.swift */; };
+		07FD1A1D2EED629A00CBC0EE /* FlowTaskWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DF2EED629A00CBC0EE /* FlowTaskWidget.swift */; };
+		07FD1A1E2EED629A00CBC0EE /* DailySummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D62EED629A00CBC0EE /* DailySummaryView.swift */; };
+		07FD1A1F2EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A012EED629A00CBC0EE /* TaskRepositoryProtocol.swift */; };
+		07FD1A202EED629A00CBC0EE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A072EED629A00CBC0EE /* Date+Extensions.swift */; };
+		07FD1A212EED629A00CBC0EE /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F92EED629A00CBC0EE /* Note.swift */; };
+		07FD1A222EED629A00CBC0EE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A052EED629A00CBC0EE /* Theme.swift */; };
+		07FD1A232EED629A00CBC0EE /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D22EED629A00CBC0EE /* FocusView.swift */; };
+		07FD1A242EED629A00CBC0EE /* DailySummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F72EED629A00CBC0EE /* DailySummary.swift */; };
+		07FD1A252EED629A00CBC0EE /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A082EED629A00CBC0EE /* String+Extensions.swift */; };
+		07FD1A262EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EA2EED629A00CBC0EE /* FlowTaskMacApp.swift */; };
+		07FD1A272EED629A00CBC0EE /* FlowTaskError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FE2EED629A00CBC0EE /* FlowTaskError.swift */; };
+		07FD1A282EED629A00CBC0EE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DD2EED629A00CBC0EE /* ContentView.swift */; };
+		07FD1A292EED629A00CBC0EE /* TaskStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19ED2EED629A00CBC0EE /* TaskStorage.swift */; };
+		07FD1A2A2EED629A00CBC0EE /* NoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EF2EED629A00CBC0EE /* NoteRepository.swift */; };
+		07FD1A2B2EED629A00CBC0EE /* FloatingWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E52EED629A00CBC0EE /* FloatingWindowView.swift */; };
+		07FD1A2C2EED629A00CBC0EE /* FocusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F32EED629A00CBC0EE /* FocusService.swift */; };
+		07FD1A2D2EED629A00CBC0EE /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19CE2EED629A00CBC0EE /* CategoryView.swift */; };
+		07FD1A2E2EED629A00CBC0EE /* TaskValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A0A2EED629A00CBC0EE /* TaskValidator.swift */; };
+		07FD1A2F2EED629A00CBC0EE /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19CC2EED629A00CBC0EE /* TaskListViewModel.swift */; };
+		07FD1A302EED629A00CBC0EE /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F42EED629A00CBC0EE /* NotificationService.swift */; };
+		07FD1A312EED629A00CBC0EE /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FC2EED629A00CBC0EE /* Task.swift */; };
+		07FD1A322EED629A00CBC0EE /* BottomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D02EED629A00CBC0EE /* BottomNavigationBar.swift */; };
+		07FD1A332EED629A00CBC0EE /* DailySummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F22EED629A00CBC0EE /* DailySummaryService.swift */; };
+		07FD1A342EED629A00CBC0EE /* TaskRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DB2EED629A00CBC0EE /* TaskRowView.swift */; };
+		07FD1A352EED629A00CBC0EE /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DA2EED629A00CBC0EE /* TaskListView.swift */; };
+		07FD1A362EED629A00CBC0EE /* Subtask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FA2EED629A00CBC0EE /* Subtask.swift */; };
+		07FD1A372EED629A00CBC0EE /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F02EED629A00CBC0EE /* TaskRepository.swift */; };
+		07FD1A382EED629A00CBC0EE /* FlowTaskApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E12EED629A00CBC0EE /* FlowTaskApp.swift */; };
+		07FD1A392EED629A00CBC0EE /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A042EED629A00CBC0EE /* SharedComponents.swift */; };
+		07FD1A3A2EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A002EED629A00CBC0EE /* NoteRepositoryProtocol.swift */; };
+		07FD1A3B2EED629A00CBC0EE /* FocusSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F82EED629A00CBC0EE /* FocusSession.swift */; };
+		07FD1A3C2EED629A00CBC0EE /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EC2EED629A00CBC0EE /* DataContainer.swift */; };
+		07FD1A3D2EED629A00CBC0EE /* MacTaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E72EED629A00CBC0EE /* MacTaskListView.swift */; };
+		07FD1A3E2EED629A00CBC0EE /* InspirationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D42EED629A00CBC0EE /* InspirationView.swift */; };
+		07FD1A3F2EED629A00CBC0EE /* MacCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E32EED629A00CBC0EE /* MacCategoryView.swift */; };
+		07FD1A402EED629A00CBC0EE /* SyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FB2EED629A00CBC0EE /* SyncStatus.swift */; };
+		07FD1A412EED629A00CBC0EE /* TaskEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D82EED629A00CBC0EE /* TaskEditView.swift */; };
+		07FD1A422EED629A00CBC0EE /* FlowTaskWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DF2EED629A00CBC0EE /* FlowTaskWidget.swift */; };
+		07FD1A432EED629A00CBC0EE /* DailySummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D62EED629A00CBC0EE /* DailySummaryView.swift */; };
+		07FD1A442EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A012EED629A00CBC0EE /* TaskRepositoryProtocol.swift */; };
+		07FD1A452EED629A00CBC0EE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A072EED629A00CBC0EE /* Date+Extensions.swift */; };
+		07FD1A462EED629A00CBC0EE /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F92EED629A00CBC0EE /* Note.swift */; };
+		07FD1A472EED629A00CBC0EE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A052EED629A00CBC0EE /* Theme.swift */; };
+		07FD1A482EED629A00CBC0EE /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D22EED629A00CBC0EE /* FocusView.swift */; };
+		07FD1A492EED629A00CBC0EE /* DailySummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F72EED629A00CBC0EE /* DailySummary.swift */; };
+		07FD1A4A2EED629A00CBC0EE /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A082EED629A00CBC0EE /* String+Extensions.swift */; };
+		07FD1A4B2EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EA2EED629A00CBC0EE /* FlowTaskMacApp.swift */; };
+		07FD1A4C2EED629A00CBC0EE /* FlowTaskError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FE2EED629A00CBC0EE /* FlowTaskError.swift */; };
+		07FD1A4D2EED629A00CBC0EE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DD2EED629A00CBC0EE /* ContentView.swift */; };
+		07FD1A4E2EED629A00CBC0EE /* TaskStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19ED2EED629A00CBC0EE /* TaskStorage.swift */; };
+		07FD1A4F2EED629A00CBC0EE /* NoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EF2EED629A00CBC0EE /* NoteRepository.swift */; };
+		07FD1A502EED629A00CBC0EE /* FloatingWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E52EED629A00CBC0EE /* FloatingWindowView.swift */; };
+		07FD1A512EED629A00CBC0EE /* FocusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F32EED629A00CBC0EE /* FocusService.swift */; };
+		07FD1A522EED629A00CBC0EE /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19CE2EED629A00CBC0EE /* CategoryView.swift */; };
+		07FD1A532EED629A00CBC0EE /* TaskValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A0A2EED629A00CBC0EE /* TaskValidator.swift */; };
+		07FD1A542EED629A00CBC0EE /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19CC2EED629A00CBC0EE /* TaskListViewModel.swift */; };
+		07FD1A552EED629A00CBC0EE /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F42EED629A00CBC0EE /* NotificationService.swift */; };
+		07FD1A562EED629A00CBC0EE /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FC2EED629A00CBC0EE /* Task.swift */; };
+		07FD1A572EED629A00CBC0EE /* BottomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D02EED629A00CBC0EE /* BottomNavigationBar.swift */; };
+		07FD1A582EED629A00CBC0EE /* DailySummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F22EED629A00CBC0EE /* DailySummaryService.swift */; };
+		07FD1A592EED629A00CBC0EE /* TaskRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DB2EED629A00CBC0EE /* TaskRowView.swift */; };
+		07FD1A5A2EED629A00CBC0EE /* TaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DA2EED629A00CBC0EE /* TaskListView.swift */; };
+		07FD1A5B2EED629A00CBC0EE /* Subtask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FA2EED629A00CBC0EE /* Subtask.swift */; };
+		07FD1A5C2EED629A00CBC0EE /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F02EED629A00CBC0EE /* TaskRepository.swift */; };
+		07FD1A5D2EED629A00CBC0EE /* FlowTaskApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E12EED629A00CBC0EE /* FlowTaskApp.swift */; };
+		07FD1A5E2EED629A00CBC0EE /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A042EED629A00CBC0EE /* SharedComponents.swift */; };
+		07FD1A5F2EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A002EED629A00CBC0EE /* NoteRepositoryProtocol.swift */; };
+		07FD1A602EED629A00CBC0EE /* FocusSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F82EED629A00CBC0EE /* FocusSession.swift */; };
+		07FD1A612EED629A00CBC0EE /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EC2EED629A00CBC0EE /* DataContainer.swift */; };
+		07FD1A622EED629A00CBC0EE /* MacTaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E72EED629A00CBC0EE /* MacTaskListView.swift */; };
+		07FD1A632EED629A00CBC0EE /* InspirationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D42EED629A00CBC0EE /* InspirationView.swift */; };
+		07FD1A642EED629A00CBC0EE /* MacCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E32EED629A00CBC0EE /* MacCategoryView.swift */; };
+		07FD1A652EED629A00CBC0EE /* SyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FB2EED629A00CBC0EE /* SyncStatus.swift */; };
+		07FD1A662EED629A00CBC0EE /* TaskEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D82EED629A00CBC0EE /* TaskEditView.swift */; };
+		07FD1A672EED629A00CBC0EE /* FlowTaskWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DF2EED629A00CBC0EE /* FlowTaskWidget.swift */; };
+		07FD1A682EED629A00CBC0EE /* DailySummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D62EED629A00CBC0EE /* DailySummaryView.swift */; };
+		07FD1A692EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A012EED629A00CBC0EE /* TaskRepositoryProtocol.swift */; };
+		07FD1A6A2EED629A00CBC0EE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A072EED629A00CBC0EE /* Date+Extensions.swift */; };
+		07FD1A6B2EED629A00CBC0EE /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F92EED629A00CBC0EE /* Note.swift */; };
+		07FD1A6C2EED629A00CBC0EE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A052EED629A00CBC0EE /* Theme.swift */; };
+		07FD1A6D2EED629A00CBC0EE /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D22EED629A00CBC0EE /* FocusView.swift */; };
+		07FD1A6E2EED629A00CBC0EE /* DailySummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F72EED629A00CBC0EE /* DailySummary.swift */; };
+		07FD1A6F2EED629A00CBC0EE /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A082EED629A00CBC0EE /* String+Extensions.swift */; };
+		07FD1A702EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EA2EED629A00CBC0EE /* FlowTaskMacApp.swift */; };
+		07FD1A712EED629A00CBC0EE /* FlowTaskError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FE2EED629A00CBC0EE /* FlowTaskError.swift */; };
+		07FD1A722EED629A00CBC0EE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19DD2EED629A00CBC0EE /* ContentView.swift */; };
+		07FD1A732EED629A00CBC0EE /* TaskStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19ED2EED629A00CBC0EE /* TaskStorage.swift */; };
+		07FD1A742EED629A00CBC0EE /* NoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EF2EED629A00CBC0EE /* NoteRepository.swift */; };
+		07FD1A752EED629A00CBC0EE /* FloatingWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E52EED629A00CBC0EE /* FloatingWindowView.swift */; };
+		07FD1A762EED629A00CBC0EE /* FocusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F32EED629A00CBC0EE /* FocusService.swift */; };
+		07FD1A772EED629A00CBC0EE /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19CE2EED629A00CBC0EE /* CategoryView.swift */; };
+		07FD1A782EED629A00CBC0EE /* TaskValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A0A2EED629A00CBC0EE /* TaskValidator.swift */; };
+		07FD1A792EED629A00CBC0EE /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19CC2EED629A00CBC0EE /* TaskListViewModel.swift */; };
+		07FD1A7A2EED629A00CBC0EE /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F42EED629A00CBC0EE /* NotificationService.swift */; };
+		07FD1A7B2EED629A00CBC0EE /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FC2EED629A00CBC0EE /* Task.swift */; };
+		07FD1A7C2EED629A00CBC0EE /* BottomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19D02EED629A00CBC0EE /* BottomNavigationBar.swift */; };
+		07FD1AA82EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA52EEDBA7600CBC0EE /* FloatingBallView.swift */; };
+		07FD1AA92EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA42EEDBA7600CBC0EE /* DesktopStickyWindow.swift */; };
+		07FD1AAA2EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA62EEDBA7600CBC0EE /* StickyWindowViewModel.swift */; };
+		07FD1AAB2EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA52EEDBA7600CBC0EE /* FloatingBallView.swift */; };
+		07FD1AAC2EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA42EEDBA7600CBC0EE /* DesktopStickyWindow.swift */; };
+		07FD1AAD2EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA62EEDBA7600CBC0EE /* StickyWindowViewModel.swift */; };
+		07FD1AAE2EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA52EEDBA7600CBC0EE /* FloatingBallView.swift */; };
+		07FD1AAF2EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA42EEDBA7600CBC0EE /* DesktopStickyWindow.swift */; };
+		07FD1AB02EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA62EEDBA7600CBC0EE /* StickyWindowViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		07FD19B02EED61F400CBC0EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07FD19982EED61F300CBC0EE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07FD199F2EED61F300CBC0EE;
+			remoteInfo = FlowTask;
+		};
+		07FD19BA2EED61F400CBC0EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07FD19982EED61F300CBC0EE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07FD199F2EED61F300CBC0EE;
+			remoteInfo = FlowTask;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		07FD19A02EED61F300CBC0EE /* FlowTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FD19AF2EED61F400CBC0EE /* FlowTaskTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowTaskTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FD19B92EED61F400CBC0EE /* FlowTaskUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowTaskUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FD19CC2EED629A00CBC0EE /* TaskListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListViewModel.swift; sourceTree = "<group>"; };
+		07FD19CE2EED629A00CBC0EE /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
+		07FD19D02EED629A00CBC0EE /* BottomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomNavigationBar.swift; sourceTree = "<group>"; };
+		07FD19D22EED629A00CBC0EE /* FocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusView.swift; sourceTree = "<group>"; };
+		07FD19D42EED629A00CBC0EE /* InspirationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspirationView.swift; sourceTree = "<group>"; };
+		07FD19D62EED629A00CBC0EE /* DailySummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySummaryView.swift; sourceTree = "<group>"; };
+		07FD19D82EED629A00CBC0EE /* TaskEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEditView.swift; sourceTree = "<group>"; };
+		07FD19DA2EED629A00CBC0EE /* TaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskListView.swift; sourceTree = "<group>"; };
+		07FD19DB2EED629A00CBC0EE /* TaskRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRowView.swift; sourceTree = "<group>"; };
+		07FD19DD2EED629A00CBC0EE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		07FD19DF2EED629A00CBC0EE /* FlowTaskWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowTaskWidget.swift; sourceTree = "<group>"; };
+		07FD19E12EED629A00CBC0EE /* FlowTaskApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowTaskApp.swift; sourceTree = "<group>"; };
+		07FD19E32EED629A00CBC0EE /* MacCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCategoryView.swift; sourceTree = "<group>"; };
+		07FD19E52EED629A00CBC0EE /* FloatingWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingWindowView.swift; sourceTree = "<group>"; };
+		07FD19E72EED629A00CBC0EE /* MacTaskListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacTaskListView.swift; sourceTree = "<group>"; };
+		07FD19EA2EED629A00CBC0EE /* FlowTaskMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowTaskMacApp.swift; sourceTree = "<group>"; };
+		07FD19EC2EED629A00CBC0EE /* DataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataContainer.swift; sourceTree = "<group>"; };
+		07FD19ED2EED629A00CBC0EE /* TaskStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskStorage.swift; sourceTree = "<group>"; };
+		07FD19EF2EED629A00CBC0EE /* NoteRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteRepository.swift; sourceTree = "<group>"; };
+		07FD19F02EED629A00CBC0EE /* TaskRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepository.swift; sourceTree = "<group>"; };
+		07FD19F22EED629A00CBC0EE /* DailySummaryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySummaryService.swift; sourceTree = "<group>"; };
+		07FD19F32EED629A00CBC0EE /* FocusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusService.swift; sourceTree = "<group>"; };
+		07FD19F42EED629A00CBC0EE /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		07FD19F72EED629A00CBC0EE /* DailySummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySummary.swift; sourceTree = "<group>"; };
+		07FD19F82EED629A00CBC0EE /* FocusSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSession.swift; sourceTree = "<group>"; };
+		07FD19F92EED629A00CBC0EE /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		07FD19FA2EED629A00CBC0EE /* Subtask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtask.swift; sourceTree = "<group>"; };
+		07FD19FB2EED629A00CBC0EE /* SyncStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatus.swift; sourceTree = "<group>"; };
+		07FD19FC2EED629A00CBC0EE /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		07FD19FE2EED629A00CBC0EE /* FlowTaskError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowTaskError.swift; sourceTree = "<group>"; };
+		07FD1A002EED629A00CBC0EE /* NoteRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteRepositoryProtocol.swift; sourceTree = "<group>"; };
+		07FD1A012EED629A00CBC0EE /* TaskRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepositoryProtocol.swift; sourceTree = "<group>"; };
+		07FD1A042EED629A00CBC0EE /* SharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedComponents.swift; sourceTree = "<group>"; };
+		07FD1A052EED629A00CBC0EE /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		07FD1A072EED629A00CBC0EE /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		07FD1A082EED629A00CBC0EE /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		07FD1A0A2EED629A00CBC0EE /* TaskValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskValidator.swift; sourceTree = "<group>"; };
+		07FD1AA42EEDBA7600CBC0EE /* DesktopStickyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopStickyWindow.swift; sourceTree = "<group>"; };
+		07FD1AA52EEDBA7600CBC0EE /* FloatingBallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBallView.swift; sourceTree = "<group>"; };
+		07FD1AA62EEDBA7600CBC0EE /* StickyWindowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickyWindowViewModel.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		07FD19A22EED61F300CBC0EE /* FlowTask */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FlowTask;
+			sourceTree = "<group>";
+		};
+		07FD1AB12EEDC00000CBC0EE /* FlowTaskTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FlowTaskTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		07FD199D2EED61F300CBC0EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FD19AC2EED61F400CBC0EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FD19B62EED61F400CBC0EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07FD19972EED61F300CBC0EE = {
+			isa = PBXGroup;
+			children = (
+				07FD19E22EED629A00CBC0EE /* iOS */,
+				07FD19EB2EED629A00CBC0EE /* macOS */,
+				07FD1A0D2EED629A00CBC0EE /* Shared */,
+				07FD19A22EED61F300CBC0EE /* FlowTask */,
+				07FD1AB12EEDC00000CBC0EE /* FlowTaskTests */,
+				07FD19A12EED61F300CBC0EE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		07FD19A12EED61F300CBC0EE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19A02EED61F300CBC0EE /* FlowTask.app */,
+				07FD19AF2EED61F400CBC0EE /* FlowTaskTests.xctest */,
+				07FD19B92EED61F400CBC0EE /* FlowTaskUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		07FD19CD2EED629A00CBC0EE /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19CC2EED629A00CBC0EE /* TaskListViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		07FD19CF2EED629A00CBC0EE /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19CE2EED629A00CBC0EE /* CategoryView.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		07FD19D12EED629A00CBC0EE /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19D02EED629A00CBC0EE /* BottomNavigationBar.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		07FD19D32EED629A00CBC0EE /* Focus */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19D22EED629A00CBC0EE /* FocusView.swift */,
+			);
+			path = Focus;
+			sourceTree = "<group>";
+		};
+		07FD19D52EED629A00CBC0EE /* Inspiration */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19D42EED629A00CBC0EE /* InspirationView.swift */,
+			);
+			path = Inspiration;
+			sourceTree = "<group>";
+		};
+		07FD19D72EED629A00CBC0EE /* Summary */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19D62EED629A00CBC0EE /* DailySummaryView.swift */,
+			);
+			path = Summary;
+			sourceTree = "<group>";
+		};
+		07FD19D92EED629A00CBC0EE /* TaskEdit */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19D82EED629A00CBC0EE /* TaskEditView.swift */,
+			);
+			path = TaskEdit;
+			sourceTree = "<group>";
+		};
+		07FD19DC2EED629A00CBC0EE /* TaskList */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19DA2EED629A00CBC0EE /* TaskListView.swift */,
+				07FD19DB2EED629A00CBC0EE /* TaskRowView.swift */,
+			);
+			path = TaskList;
+			sourceTree = "<group>";
+		};
+		07FD19DE2EED629A00CBC0EE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19CF2EED629A00CBC0EE /* Category */,
+				07FD19D12EED629A00CBC0EE /* Components */,
+				07FD19D32EED629A00CBC0EE /* Focus */,
+				07FD19D52EED629A00CBC0EE /* Inspiration */,
+				07FD19D72EED629A00CBC0EE /* Summary */,
+				07FD19D92EED629A00CBC0EE /* TaskEdit */,
+				07FD19DC2EED629A00CBC0EE /* TaskList */,
+				07FD19DD2EED629A00CBC0EE /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		07FD19E02EED629A00CBC0EE /* Widget */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19DF2EED629A00CBC0EE /* FlowTaskWidget.swift */,
+			);
+			path = Widget;
+			sourceTree = "<group>";
+		};
+		07FD19E22EED629A00CBC0EE /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19CD2EED629A00CBC0EE /* ViewModels */,
+				07FD19DE2EED629A00CBC0EE /* Views */,
+				07FD19E02EED629A00CBC0EE /* Widget */,
+				07FD19E12EED629A00CBC0EE /* FlowTaskApp.swift */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		07FD19E42EED629A00CBC0EE /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19E32EED629A00CBC0EE /* MacCategoryView.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		07FD19E62EED629A00CBC0EE /* FloatingWindow */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19E52EED629A00CBC0EE /* FloatingWindowView.swift */,
+			);
+			path = FloatingWindow;
+			sourceTree = "<group>";
+		};
+		07FD19E82EED629A00CBC0EE /* TaskList */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19E72EED629A00CBC0EE /* MacTaskListView.swift */,
+			);
+			path = TaskList;
+			sourceTree = "<group>";
+		};
+		07FD19E92EED629A00CBC0EE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1AA72EEDBA7600CBC0EE /* StickyWindow */,
+				07FD19E42EED629A00CBC0EE /* Category */,
+				07FD19E62EED629A00CBC0EE /* FloatingWindow */,
+				07FD19E82EED629A00CBC0EE /* TaskList */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		07FD19EB2EED629A00CBC0EE /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19E92EED629A00CBC0EE /* Views */,
+				07FD19EA2EED629A00CBC0EE /* FlowTaskMacApp.swift */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		07FD19EE2EED629A00CBC0EE /* LocalStorage */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19EC2EED629A00CBC0EE /* DataContainer.swift */,
+				07FD19ED2EED629A00CBC0EE /* TaskStorage.swift */,
+			);
+			path = LocalStorage;
+			sourceTree = "<group>";
+		};
+		07FD19F12EED629A00CBC0EE /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19EF2EED629A00CBC0EE /* NoteRepository.swift */,
+				07FD19F02EED629A00CBC0EE /* TaskRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		07FD19F52EED629A00CBC0EE /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19F22EED629A00CBC0EE /* DailySummaryService.swift */,
+				07FD19F32EED629A00CBC0EE /* FocusService.swift */,
+				07FD19F42EED629A00CBC0EE /* NotificationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		07FD19F62EED629A00CBC0EE /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19EE2EED629A00CBC0EE /* LocalStorage */,
+				07FD19F12EED629A00CBC0EE /* Repositories */,
+				07FD19F52EED629A00CBC0EE /* Services */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		07FD19FD2EED629A00CBC0EE /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19F72EED629A00CBC0EE /* DailySummary.swift */,
+				07FD19F82EED629A00CBC0EE /* FocusSession.swift */,
+				07FD19F92EED629A00CBC0EE /* Note.swift */,
+				07FD19FA2EED629A00CBC0EE /* Subtask.swift */,
+				07FD19FB2EED629A00CBC0EE /* SyncStatus.swift */,
+				07FD19FC2EED629A00CBC0EE /* Task.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		07FD19FF2EED629A00CBC0EE /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19FE2EED629A00CBC0EE /* FlowTaskError.swift */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		07FD1A022EED629A00CBC0EE /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1A002EED629A00CBC0EE /* NoteRepositoryProtocol.swift */,
+				07FD1A012EED629A00CBC0EE /* TaskRepositoryProtocol.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		07FD1A032EED629A00CBC0EE /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19FD2EED629A00CBC0EE /* Entities */,
+				07FD19FF2EED629A00CBC0EE /* Errors */,
+				07FD1A022EED629A00CBC0EE /* Repositories */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		07FD1A062EED629A00CBC0EE /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1A042EED629A00CBC0EE /* SharedComponents.swift */,
+				07FD1A052EED629A00CBC0EE /* Theme.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		07FD1A092EED629A00CBC0EE /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1A072EED629A00CBC0EE /* Date+Extensions.swift */,
+				07FD1A082EED629A00CBC0EE /* String+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		07FD1A0B2EED629A00CBC0EE /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1A0A2EED629A00CBC0EE /* TaskValidator.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		07FD1A0C2EED629A00CBC0EE /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1A062EED629A00CBC0EE /* DesignSystem */,
+				07FD1A092EED629A00CBC0EE /* Extensions */,
+				07FD1A0B2EED629A00CBC0EE /* Helpers */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		07FD1A0D2EED629A00CBC0EE /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				07FD19F62EED629A00CBC0EE /* Data */,
+				07FD1A032EED629A00CBC0EE /* Domain */,
+				07FD1A0C2EED629A00CBC0EE /* Utilities */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		07FD1AA72EEDBA7600CBC0EE /* StickyWindow */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1AA42EEDBA7600CBC0EE /* DesktopStickyWindow.swift */,
+				07FD1AA52EEDBA7600CBC0EE /* FloatingBallView.swift */,
+				07FD1AA62EEDBA7600CBC0EE /* StickyWindowViewModel.swift */,
+			);
+			path = StickyWindow;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		07FD199F2EED61F300CBC0EE /* FlowTask */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07FD19C32EED61F400CBC0EE /* Build configuration list for PBXNativeTarget "FlowTask" */;
+			buildPhases = (
+				07FD199C2EED61F300CBC0EE /* Sources */,
+				07FD199D2EED61F300CBC0EE /* Frameworks */,
+				07FD199E2EED61F300CBC0EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				07FD19A22EED61F300CBC0EE /* FlowTask */,
+			);
+			name = FlowTask;
+			packageProductDependencies = (
+			);
+			productName = FlowTask;
+			productReference = 07FD19A02EED61F300CBC0EE /* FlowTask.app */;
+			productType = "com.apple.product-type.application";
+		};
+		07FD19AE2EED61F400CBC0EE /* FlowTaskTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07FD19C62EED61F400CBC0EE /* Build configuration list for PBXNativeTarget "FlowTaskTests" */;
+			buildPhases = (
+				07FD19AB2EED61F400CBC0EE /* Sources */,
+				07FD19AC2EED61F400CBC0EE /* Frameworks */,
+				07FD19AD2EED61F400CBC0EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07FD19B12EED61F400CBC0EE /* PBXTargetDependency */,
+			);
+			name = FlowTaskTests;
+			packageProductDependencies = (
+			);
+			productName = FlowTaskTests;
+			productReference = 07FD19AF2EED61F400CBC0EE /* FlowTaskTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		07FD19B82EED61F400CBC0EE /* FlowTaskUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07FD19C92EED61F400CBC0EE /* Build configuration list for PBXNativeTarget "FlowTaskUITests" */;
+			buildPhases = (
+				07FD19B52EED61F400CBC0EE /* Sources */,
+				07FD19B62EED61F400CBC0EE /* Frameworks */,
+				07FD19B72EED61F400CBC0EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07FD19BB2EED61F400CBC0EE /* PBXTargetDependency */,
+			);
+			name = FlowTaskUITests;
+			packageProductDependencies = (
+			);
+			productName = FlowTaskUITests;
+			productReference = 07FD19B92EED61F400CBC0EE /* FlowTaskUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		07FD19982EED61F300CBC0EE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				KnownAssetTags = (
+					New,
+				);
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					07FD199F2EED61F300CBC0EE = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					07FD19AE2EED61F400CBC0EE = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 07FD199F2EED61F300CBC0EE;
+					};
+					07FD19B82EED61F400CBC0EE = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 07FD199F2EED61F300CBC0EE;
+					};
+				};
+			};
+			buildConfigurationList = 07FD199B2EED61F300CBC0EE /* Build configuration list for PBXProject "FlowTask" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 07FD19972EED61F300CBC0EE;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 07FD19A12EED61F300CBC0EE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				07FD199F2EED61F300CBC0EE /* FlowTask */,
+				07FD19AE2EED61F400CBC0EE /* FlowTaskTests */,
+				07FD19B82EED61F400CBC0EE /* FlowTaskUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		07FD199E2EED61F300CBC0EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FD19AD2EED61F400CBC0EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FD19B72EED61F400CBC0EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		07FD199C2EED61F300CBC0EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FD1A0E2EED629A00CBC0EE /* DailySummaryService.swift in Sources */,
+				07FD1A0F2EED629A00CBC0EE /* TaskRowView.swift in Sources */,
+				07FD1A102EED629A00CBC0EE /* TaskListView.swift in Sources */,
+				07FD1A112EED629A00CBC0EE /* Subtask.swift in Sources */,
+				07FD1A122EED629A00CBC0EE /* TaskRepository.swift in Sources */,
+				07FD1A132EED629A00CBC0EE /* FlowTaskApp.swift in Sources */,
+				07FD1A142EED629A00CBC0EE /* SharedComponents.swift in Sources */,
+				07FD1A152EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */,
+				07FD1A162EED629A00CBC0EE /* FocusSession.swift in Sources */,
+				07FD1A172EED629A00CBC0EE /* DataContainer.swift in Sources */,
+				07FD1A182EED629A00CBC0EE /* MacTaskListView.swift in Sources */,
+				07FD1A192EED629A00CBC0EE /* InspirationView.swift in Sources */,
+				07FD1A1A2EED629A00CBC0EE /* MacCategoryView.swift in Sources */,
+				07FD1A1B2EED629A00CBC0EE /* SyncStatus.swift in Sources */,
+				07FD1A1C2EED629A00CBC0EE /* TaskEditView.swift in Sources */,
+				07FD1A1D2EED629A00CBC0EE /* FlowTaskWidget.swift in Sources */,
+				07FD1A1E2EED629A00CBC0EE /* DailySummaryView.swift in Sources */,
+				07FD1A1F2EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */,
+				07FD1A202EED629A00CBC0EE /* Date+Extensions.swift in Sources */,
+				07FD1A212EED629A00CBC0EE /* Note.swift in Sources */,
+				07FD1A222EED629A00CBC0EE /* Theme.swift in Sources */,
+				07FD1A232EED629A00CBC0EE /* FocusView.swift in Sources */,
+				07FD1A242EED629A00CBC0EE /* DailySummary.swift in Sources */,
+				07FD1A252EED629A00CBC0EE /* String+Extensions.swift in Sources */,
+				07FD1A262EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */,
+				07FD1A272EED629A00CBC0EE /* FlowTaskError.swift in Sources */,
+				07FD1A282EED629A00CBC0EE /* ContentView.swift in Sources */,
+				07FD1A292EED629A00CBC0EE /* TaskStorage.swift in Sources */,
+				07FD1A2A2EED629A00CBC0EE /* NoteRepository.swift in Sources */,
+				07FD1A2B2EED629A00CBC0EE /* FloatingWindowView.swift in Sources */,
+				07FD1A2C2EED629A00CBC0EE /* FocusService.swift in Sources */,
+				07FD1A2D2EED629A00CBC0EE /* CategoryView.swift in Sources */,
+				07FD1A2E2EED629A00CBC0EE /* TaskValidator.swift in Sources */,
+				07FD1A2F2EED629A00CBC0EE /* TaskListViewModel.swift in Sources */,
+				07FD1AAB2EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */,
+				07FD1AAC2EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */,
+				07FD1AAD2EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */,
+				07FD1A302EED629A00CBC0EE /* NotificationService.swift in Sources */,
+				07FD1A312EED629A00CBC0EE /* Task.swift in Sources */,
+				07FD1A322EED629A00CBC0EE /* BottomNavigationBar.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FD19AB2EED61F400CBC0EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FD1A332EED629A00CBC0EE /* DailySummaryService.swift in Sources */,
+				07FD1A342EED629A00CBC0EE /* TaskRowView.swift in Sources */,
+				07FD1A352EED629A00CBC0EE /* TaskListView.swift in Sources */,
+				07FD1A362EED629A00CBC0EE /* Subtask.swift in Sources */,
+				07FD1A372EED629A00CBC0EE /* TaskRepository.swift in Sources */,
+				07FD1A382EED629A00CBC0EE /* FlowTaskApp.swift in Sources */,
+				07FD1A392EED629A00CBC0EE /* SharedComponents.swift in Sources */,
+				07FD1A3A2EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */,
+				07FD1A3B2EED629A00CBC0EE /* FocusSession.swift in Sources */,
+				07FD1A3C2EED629A00CBC0EE /* DataContainer.swift in Sources */,
+				07FD1A3D2EED629A00CBC0EE /* MacTaskListView.swift in Sources */,
+				07FD1A3E2EED629A00CBC0EE /* InspirationView.swift in Sources */,
+				07FD1A3F2EED629A00CBC0EE /* MacCategoryView.swift in Sources */,
+				07FD1A402EED629A00CBC0EE /* SyncStatus.swift in Sources */,
+				07FD1A412EED629A00CBC0EE /* TaskEditView.swift in Sources */,
+				07FD1A422EED629A00CBC0EE /* FlowTaskWidget.swift in Sources */,
+				07FD1A432EED629A00CBC0EE /* DailySummaryView.swift in Sources */,
+				07FD1A442EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */,
+				07FD1A452EED629A00CBC0EE /* Date+Extensions.swift in Sources */,
+				07FD1A462EED629A00CBC0EE /* Note.swift in Sources */,
+				07FD1A472EED629A00CBC0EE /* Theme.swift in Sources */,
+				07FD1A482EED629A00CBC0EE /* FocusView.swift in Sources */,
+				07FD1A492EED629A00CBC0EE /* DailySummary.swift in Sources */,
+				07FD1A4A2EED629A00CBC0EE /* String+Extensions.swift in Sources */,
+				07FD1A4B2EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */,
+				07FD1A4C2EED629A00CBC0EE /* FlowTaskError.swift in Sources */,
+				07FD1A4D2EED629A00CBC0EE /* ContentView.swift in Sources */,
+				07FD1A4E2EED629A00CBC0EE /* TaskStorage.swift in Sources */,
+				07FD1A4F2EED629A00CBC0EE /* NoteRepository.swift in Sources */,
+				07FD1A502EED629A00CBC0EE /* FloatingWindowView.swift in Sources */,
+				07FD1A512EED629A00CBC0EE /* FocusService.swift in Sources */,
+				07FD1A522EED629A00CBC0EE /* CategoryView.swift in Sources */,
+				07FD1A532EED629A00CBC0EE /* TaskValidator.swift in Sources */,
+				07FD1A542EED629A00CBC0EE /* TaskListViewModel.swift in Sources */,
+				07FD1AAE2EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */,
+				07FD1AAF2EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */,
+				07FD1AB02EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */,
+				07FD1A552EED629A00CBC0EE /* NotificationService.swift in Sources */,
+				07FD1A562EED629A00CBC0EE /* Task.swift in Sources */,
+				07FD1A572EED629A00CBC0EE /* BottomNavigationBar.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FD19B52EED61F400CBC0EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FD1A582EED629A00CBC0EE /* DailySummaryService.swift in Sources */,
+				07FD1A592EED629A00CBC0EE /* TaskRowView.swift in Sources */,
+				07FD1A5A2EED629A00CBC0EE /* TaskListView.swift in Sources */,
+				07FD1A5B2EED629A00CBC0EE /* Subtask.swift in Sources */,
+				07FD1A5C2EED629A00CBC0EE /* TaskRepository.swift in Sources */,
+				07FD1A5D2EED629A00CBC0EE /* FlowTaskApp.swift in Sources */,
+				07FD1A5E2EED629A00CBC0EE /* SharedComponents.swift in Sources */,
+				07FD1A5F2EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */,
+				07FD1A602EED629A00CBC0EE /* FocusSession.swift in Sources */,
+				07FD1A612EED629A00CBC0EE /* DataContainer.swift in Sources */,
+				07FD1A622EED629A00CBC0EE /* MacTaskListView.swift in Sources */,
+				07FD1A632EED629A00CBC0EE /* InspirationView.swift in Sources */,
+				07FD1A642EED629A00CBC0EE /* MacCategoryView.swift in Sources */,
+				07FD1A652EED629A00CBC0EE /* SyncStatus.swift in Sources */,
+				07FD1A662EED629A00CBC0EE /* TaskEditView.swift in Sources */,
+				07FD1A672EED629A00CBC0EE /* FlowTaskWidget.swift in Sources */,
+				07FD1A682EED629A00CBC0EE /* DailySummaryView.swift in Sources */,
+				07FD1A692EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */,
+				07FD1A6A2EED629A00CBC0EE /* Date+Extensions.swift in Sources */,
+				07FD1A6B2EED629A00CBC0EE /* Note.swift in Sources */,
+				07FD1A6C2EED629A00CBC0EE /* Theme.swift in Sources */,
+				07FD1A6D2EED629A00CBC0EE /* FocusView.swift in Sources */,
+				07FD1A6E2EED629A00CBC0EE /* DailySummary.swift in Sources */,
+				07FD1A6F2EED629A00CBC0EE /* String+Extensions.swift in Sources */,
+				07FD1A702EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */,
+				07FD1A712EED629A00CBC0EE /* FlowTaskError.swift in Sources */,
+				07FD1A722EED629A00CBC0EE /* ContentView.swift in Sources */,
+				07FD1A732EED629A00CBC0EE /* TaskStorage.swift in Sources */,
+				07FD1A742EED629A00CBC0EE /* NoteRepository.swift in Sources */,
+				07FD1A752EED629A00CBC0EE /* FloatingWindowView.swift in Sources */,
+				07FD1A762EED629A00CBC0EE /* FocusService.swift in Sources */,
+				07FD1A772EED629A00CBC0EE /* CategoryView.swift in Sources */,
+				07FD1A782EED629A00CBC0EE /* TaskValidator.swift in Sources */,
+				07FD1A792EED629A00CBC0EE /* TaskListViewModel.swift in Sources */,
+				07FD1AA82EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */,
+				07FD1AA92EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */,
+				07FD1AAA2EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */,
+				07FD1A7A2EED629A00CBC0EE /* NotificationService.swift in Sources */,
+				07FD1A7B2EED629A00CBC0EE /* Task.swift in Sources */,
+				07FD1A7C2EED629A00CBC0EE /* BottomNavigationBar.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		07FD19B12EED61F400CBC0EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07FD199F2EED61F300CBC0EE /* FlowTask */;
+			targetProxy = 07FD19B02EED61F400CBC0EE /* PBXContainerItemProxy */;
+		};
+		07FD19BB2EED61F400CBC0EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07FD199F2EED61F300CBC0EE /* FlowTask */;
+			targetProxy = 07FD19BA2EED61F400CBC0EE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		07FD19C12EED61F400CBC0EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		07FD19C22EED61F400CBC0EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		07FD19C42EED61F400CBC0EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zxyang.flowtask.FlowTask;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		07FD19C52EED61F400CBC0EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zxyang.flowtask.FlowTask;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+		07FD19C72EED61F400CBC0EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zxyang.flowtask.FlowTaskTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlowTask.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FlowTask";
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		07FD19C82EED61F400CBC0EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zxyang.flowtask.FlowTaskTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlowTask.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FlowTask";
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+		07FD19CA2EED61F400CBC0EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zxyang.flowtask.FlowTaskUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_TARGET_NAME = FlowTask;
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		07FD19CB2EED61F400CBC0EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zxyang.flowtask.FlowTaskUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_TARGET_NAME = FlowTask;
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07FD199B2EED61F300CBC0EE /* Build configuration list for PBXProject "FlowTask" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07FD19C12EED61F400CBC0EE /* Debug */,
+				07FD19C22EED61F400CBC0EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07FD19C32EED61F400CBC0EE /* Build configuration list for PBXNativeTarget "FlowTask" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07FD19C42EED61F400CBC0EE /* Debug */,
+				07FD19C52EED61F400CBC0EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07FD19C62EED61F400CBC0EE /* Build configuration list for PBXNativeTarget "FlowTaskTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07FD19C72EED61F400CBC0EE /* Debug */,
+				07FD19C82EED61F400CBC0EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07FD19C92EED61F400CBC0EE /* Build configuration list for PBXNativeTarget "FlowTaskUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07FD19CA2EED61F400CBC0EE /* Debug */,
+				07FD19CB2EED61F400CBC0EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 07FD19982EED61F300CBC0EE /* Project object */;
+}

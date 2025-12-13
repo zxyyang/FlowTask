@@ -1,0 +1,1138 @@
+import SwiftUI
+import SwiftData
+import Combine
+
+#if os(macOS)
+import AppKit
+
+// MARK: - Shared Data Manager
+/// 全局数据管理器，确保所有地方使用同一份数据
+@MainActor
+class SharedDataManager: ObservableObject {
+    static let shared = SharedDataManager()
+    
+    @Published var tasks: [FlowTask] = []
+    @Published var notes: [Note] = []
+    @Published var lastUpdateTime: Date = Date()
+    
+    private var taskRepository: TaskRepository?
+    private var noteRepository: NoteRepository?
+    private var isInitialized = false
+    
+    private init() {}
+    
+    var hasRepositories: Bool {
+        taskRepository != nil && noteRepository != nil
+    }
+    
+    func setRepositories(taskRepo: TaskRepository, noteRepo: NoteRepository) {
+        guard !isInitialized else { return }
+        self.taskRepository = taskRepo
+        self.noteRepository = noteRepo
+        self.isInitialized = true
+        Task {
+            await loadAll()
+        }
+    }
+    
+    func loadAll() async {
+        await loadTasks()
+        await loadNotes()
+    }
+    
+    func loadTasks() async {
+        guard let repo = taskRepository else { return }
+        do {
+            tasks = try await repo.fetchAllTasks()
+            notifyUpdate()
+        } catch {
+            print("加载任务失败: \(error)")
+        }
+    }
+    
+    func loadNotes() async {
+        guard let repo = noteRepository else { return }
+        do {
+            notes = try await repo.fetchAllNotes()
+            notifyUpdate()
+        } catch {
+            print("加载笔记失败: \(error)")
+        }
+    }
+    
+    private func notifyUpdate() {
+        lastUpdateTime = Date()
+        objectWillChange.send()
+    }
+    
+    // MARK: - Task Operations
+    func toggleTask(_ task: FlowTask) {
+        guard let index = tasks.firstIndex(where: { $0.id == task.id }) else { return }
+        tasks[index].isCompleted.toggle()
+        tasks[index].updatedAt = Date()
+        
+        let updatedTask = tasks[index]
+        notifyUpdate()
+        
+        if let repo = taskRepository {
+            Task {
+                _ = try? await repo.updateTask(updatedTask)
+            }
+        }
+    }
+    
+    func addTask(title: String) {
+        let calendar = Calendar.current
+        let endOfToday = calendar.date(bySettingHour: 23, minute: 59, second: 0, of: Date())
+        let newTask = FlowTask(title: title, dueDate: endOfToday)
+        tasks.insert(newTask, at: 0)
+        notifyUpdate()
+        
+        if let repo = taskRepository {
+            Task {
+                _ = try? await repo.createTask(newTask)
+            }
+        }
+    }
+    
+    func deleteTask(_ task: FlowTask) {
+        tasks.removeAll { $0.id == task.id }
+        notifyUpdate()
+        
+        if let repo = taskRepository {
+            Task {
+                try? await repo.deleteTask(task)
+            }
+        }
+    }
+    
+    func toggleSubtask(_ task: FlowTask, subtask: Subtask) {
+        guard let taskIndex = tasks.firstIndex(where: { $0.id == task.id }),
+              let subtaskIndex = tasks[taskIndex].subtasks.firstIndex(where: { $0.id == subtask.id }) else { return }
+        
+        tasks[taskIndex].subtasks[subtaskIndex].isCompleted.toggle()
+        tasks[taskIndex].updatedAt = Date()
+        
+        let updatedTask = tasks[taskIndex]
+        notifyUpdate()
+        
+        if let repo = taskRepository {
+            Task {
+                _ = try? await repo.updateTask(updatedTask)
+            }
+        }
+    }
+    
+    // MARK: - Note Operations
+    func addNote(title: String, content: String) {
+        let newNote = Note(title: title, content: content)
+        notes.insert(newNote, at: 0)
+        notifyUpdate()
+        
+        if let repo = noteRepository {
+            Task {
+                _ = try? await repo.createNote(newNote)
+            }
+        }
+    }
+    
+    func updateNote(_ note: Note) {
+        guard let index = notes.firstIndex(where: { $0.id == note.id }) else { return }
+        var updated = note
+        updated.updatedAt = Date()
+        notes[index] = updated
+        notifyUpdate()
+        
+        if let repo = noteRepository {
+            Task {
+                _ = try? await repo.updateNote(updated)
+            }
+        }
+    }
+    
+    func deleteNote(_ note: Note) {
+        notes.removeAll { $0.id == note.id }
+        notifyUpdate()
+        
+        if let repo = noteRepository {
+            Task {
+                try? await repo.deleteNote(note)
+            }
+        }
+    }
+}
+
+// MARK: - FlowTask Mac App
+/// macOS 应用入口
+@main
+struct FlowTaskMacApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Environment(\.openWindow) private var openWindow
+    
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            TaskModel.self,
+            SubtaskModel.self,
+            NoteModel.self,
+            FocusSessionModel.self
+        ])
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: false
+        )
+        
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("无法创建 ModelContainer: \(error)")
+        }
+    }()
+    
+    init() {
+        // 监听创建新窗口的通知（在 AppDelegate 中处理）
+    }
+    
+    var body: some Scene {
+        WindowGroup(id: "main") {
+            MainWindowContainer()
+                .task {
+                    // 使用 task 而不是 onAppear,确保每次窗口创建时都能正确设置
+                    WindowManager.shared.openWindowAction = openWindow
+                    WindowOpener.shared.openWindow = openWindow
+                    appDelegate.setOpenWindowAction(openWindow)
+                    print("[FlowTaskMacApp] openWindowAction 已设置")
+                }
+        }
+        .modelContainer(sharedModelContainer)
+        .defaultSize(width: 1000, height: 700)
+        .commands {
+            // 窗口菜单
+            CommandGroup(after: .windowList) {
+                Button("显示主窗口") {
+                    // 使用 WindowManager 显示主窗口
+                    WindowManager.shared.showMainWindow()
+                }
+                .keyboardShortcut("1", modifiers: [.command])
+            }
+            
+            CommandGroup(after: .newItem) {
+                Button("新建任务") {
+                    FloatingWindowManager.shared.currentMode = .task
+                    FloatingWindowManager.shared.show()
+                }
+                .keyboardShortcut("n", modifiers: [.command])
+                
+                Button("新建笔记") {
+                    FloatingWindowManager.shared.currentMode = .note
+                    FloatingWindowManager.shared.show()
+                }
+                .keyboardShortcut("n", modifiers: [.command, .shift])
+                
+                Divider()
+                
+                Button("显示/隐藏悬浮窗") {
+                    FloatingWindowManager.shared.toggle()
+                }
+                .keyboardShortcut("f", modifiers: [.command, .shift])
+                
+                Button("显示/隐藏桌面贴图") {
+                    DesktopStickyWindowManager.shared.toggle()
+                }
+                .keyboardShortcut("t", modifiers: [.command, .shift])
+            }
+        }
+        
+        // 设置窗口
+        Settings {
+            SettingsView()
+        }
+    }
+}
+
+// MARK: - App Delegate
+class AppDelegate: NSObject, NSApplicationDelegate {
+    var statusItem: NSStatusItem?
+    private var savedOpenWindowAction: OpenWindowAction?
+    
+    func setOpenWindowAction(_ action: OpenWindowAction) {
+        savedOpenWindowAction = action
+        // 同时更新 WindowManager
+        WindowManager.shared.openWindowAction = action
+        WindowOpener.shared.openWindow = action
+    }
+    
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        setupStatusBarItem()
+        
+        // 监听打开主窗口的通知
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleOpenMainWindow),
+            name: NSNotification.Name("OpenMainWindow"),
+            object: nil
+        )
+        
+        // 监听创建新主窗口的通知
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleCreateNewMainWindow),
+            name: NSNotification.Name("CreateNewMainWindow"),
+            object: nil
+        )
+        
+        // 启动时显示悬浮球
+        Task { @MainActor in
+            DesktopStickyWindowManager.shared.showFloatingBall()
+        }
+    }
+    
+    // 点击 Dock 图标时打开主窗口
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        print("[AppDelegate] applicationShouldHandleReopen 被调用, hasVisibleWindows: \(flag)")
+        
+        // 无论是否有可见窗口,都尝试显示主窗口
+        DispatchQueue.main.async {
+            // 先激活应用
+            NSApp.activate(ignoringOtherApps: true)
+            
+            // 检查是否有主窗口
+            let mainWindow = WindowManager.shared.findMainWindow()
+            
+            if let window = mainWindow {
+                // 如果找到窗口,显示它
+                print("[AppDelegate] 找到现有窗口,显示它")
+                if window.isMiniaturized {
+                    window.deminiaturize(nil)
+                }
+                window.makeKeyAndOrderFront(nil)
+            } else {
+                // 如果没有窗口,强制创建新窗口
+                print("[AppDelegate] 没有找到窗口,强制创建新窗口")
+                if let action = self.savedOpenWindowAction {
+                    action(id: "main")
+                } else {
+                    // 如果 openWindowAction 不可用,使用 WindowManager
+                    WindowManager.shared.showMainWindow()
+                }
+            }
+        }
+        return true
+    }
+    
+    // 防止应用在关闭所有窗口后退出
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return false
+    }
+    
+    @objc func handleCreateNewMainWindow() {
+        DispatchQueue.main.async {
+            // 优先使用保存的 openWindow action
+            if let action = self.savedOpenWindowAction {
+                action(id: "main")
+                return
+            }
+            
+            // 如果 action 不可用，激活应用
+            NSApp.activate(ignoringOtherApps: true)
+            
+            // 延迟检查是否需要强制创建窗口
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                // 检查是否有非 Panel 的窗口
+                let hasMainWindow = NSApp.windows.contains { window in
+                    !(window is NSPanel) && window.contentView != nil
+                }
+                
+                if !hasMainWindow {
+                    self.forceCreateMainWindow()
+                }
+            }
+        }
+    }
+    
+    private func forceCreateMainWindow() {
+        // 最后的备用方案 - 创建一个提示窗口
+        let alert = NSAlert()
+        alert.messageText = "无法打开主窗口"
+        alert.informativeText = "请尝试以下操作：\n1. 点击 Dock 图标重新打开\n2. 使用菜单栏 > 显示主窗口\n3. 重启应用"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "确定")
+        alert.runModal()
+    }
+    
+    private func setupStatusBarItem() {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        
+        if let button = statusItem?.button {
+            button.image = NSImage(systemSymbolName: "checkmark.circle", accessibilityDescription: "FlowTask")
+            button.action = #selector(statusBarButtonClicked)
+            button.target = self
+        }
+        
+        setupStatusBarMenu()
+    }
+    
+    private func setupStatusBarMenu() {
+        let menu = NSMenu()
+        
+        let mainWindowItem = NSMenuItem(title: "显示主窗口", action: #selector(showMainWindow), keyEquivalent: "1")
+        mainWindowItem.keyEquivalentModifierMask = [.command]
+        menu.addItem(mainWindowItem)
+        
+        menu.addItem(NSMenuItem(title: "快速添加任务", action: #selector(showFloatingWindow), keyEquivalent: ""))
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "显示桌面贴图", action: #selector(showStickyWindow), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "显示/隐藏悬浮球", action: #selector(toggleFloatingBall), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "贴图设置...", action: #selector(openStickySettings), keyEquivalent: ""))
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "退出", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        
+        statusItem?.menu = menu
+    }
+    
+    @objc func statusBarButtonClicked() {
+        // 单击显示菜单
+    }
+    
+    @objc func showMainWindow() {
+        WindowManager.shared.showMainWindow()
+    }
+    
+    @objc func handleOpenMainWindow() {
+        WindowManager.shared.showMainWindow()
+    }
+    
+    @objc func showFloatingWindow() {
+        Task { @MainActor in
+            FloatingWindowManager.shared.show()
+        }
+    }
+    
+    @objc func showStickyWindow() {
+        print("[AppDelegate] showStickyWindow() 被调用")
+        Task { @MainActor in
+            print("[AppDelegate] 在 MainActor 中调用 DesktopStickyWindowManager.shared.showStickyWindow()")
+            DesktopStickyWindowManager.shared.showStickyWindow()
+        }
+    }
+    
+    @objc func toggleFloatingBall() {
+        Task { @MainActor in
+            DesktopStickyWindowManager.shared.toggleFloatingBall()
+        }
+    }
+    
+    @objc func openStickySettings() {
+        Task { @MainActor in
+            StickySettingsWindowController.shared.show()
+        }
+    }
+}
+
+// MARK: - Main Window Container
+/// 包装 MacContentView，用于处理窗口打开逻辑
+struct MainWindowContainer: View {
+    var body: some View {
+        MacContentView()
+    }
+}
+
+// MARK: - Mac Content View
+struct MacContentView: View {
+    @Environment(\.modelContext) private var modelContext
+    @StateObject private var taskListViewModel = TaskListViewModel()
+    @ObservedObject private var sharedData = SharedDataManager.shared
+    @State private var selectedSidebarItem: SidebarItem = .tasks
+    @State private var isDataSetup = false
+    @State private var isSyncingFromShared = false
+    
+    var body: some View {
+        NavigationSplitView {
+            // 侧边栏
+            List(selection: $selectedSidebarItem) {
+                Section("任务") {
+                    Label("所有任务", systemImage: "list.bullet")
+                        .tag(SidebarItem.tasks)
+                    
+                    Label("分类", systemImage: "folder")
+                        .tag(SidebarItem.categories)
+                    
+                    Label("今日", systemImage: "sun.max")
+                        .tag(SidebarItem.today)
+                }
+                
+                Section("其他") {
+                    Label("笔记", systemImage: "note.text")
+                        .tag(SidebarItem.notes)
+                    
+                    Label("每日总结", systemImage: "chart.bar")
+                        .tag(SidebarItem.summary)
+                }
+            }
+            .listStyle(.sidebar)
+            .frame(minWidth: 180)
+        } detail: {
+            switch selectedSidebarItem {
+            case .tasks:
+                MacTaskListView(viewModel: taskListViewModel)
+            case .categories:
+                MacCategoryView(viewModel: taskListViewModel)
+            case .today:
+                MacTodayView(viewModel: taskListViewModel)
+            case .notes:
+                MacNotesView()
+            case .summary:
+                MacSummaryView(viewModel: taskListViewModel)
+            }
+        }
+        .onAppear {
+            setupData()
+        }
+        .onChange(of: taskListViewModel.tasks) { _, newTasks in
+            // 主窗口任务变化时同步到共享数据（避免循环）
+            guard isDataSetup && !isSyncingFromShared else { return }
+            sharedData.tasks = newTasks
+        }
+        .onChange(of: sharedData.lastUpdateTime) { _, _ in
+            // 共享数据变化时同步到主窗口（来自贴图窗口的修改）
+            guard isDataSetup else { return }
+            isSyncingFromShared = true
+            taskListViewModel.tasks = sharedData.tasks
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isSyncingFromShared = false
+            }
+        }
+    }
+    
+    private func setupData() {
+        taskListViewModel.setContext(modelContext)
+        
+        // 设置共享数据管理器
+        let taskRepository = TaskRepository(context: modelContext)
+        let noteRepository = NoteRepository(context: modelContext)
+        SharedDataManager.shared.setRepositories(taskRepo: taskRepository, noteRepo: noteRepository)
+        
+        // 标记数据已设置完成
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            isDataSetup = true
+            // 初始同步
+            taskListViewModel.tasks = sharedData.tasks
+        }
+    }
+}
+
+// MARK: - Sidebar Item
+enum SidebarItem: Hashable {
+    case tasks
+    case categories
+    case today
+    case notes
+    case summary
+}
+
+// MARK: - Mac Today View
+struct MacTodayView: View {
+    @ObservedObject var viewModel: TaskListViewModel
+    
+    private var todayTasks: [FlowTask] {
+        let calendar = Calendar.current
+        return viewModel.tasks.filter { task in
+            if let dueDate = task.dueDate {
+                return calendar.isDateInToday(dueDate)
+            }
+            return false
+        }
+    }
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // 标题
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("今日任务")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    
+                    Text(Date().formattedDate)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                // 统计
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("\(todayTasks.filter { $0.isCompleted }.count)/\(todayTasks.count)")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    
+                    Text("已完成")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding()
+            
+            Divider()
+            
+            if todayTasks.isEmpty {
+                // 空状态
+                VStack(spacing: 16) {
+                    Image(systemName: "sun.max.fill")
+                        .font(.system(size: 48))
+                        .foregroundColor(.yellow)
+                    
+                    Text("今天没有任务")
+                        .font(.headline)
+                    
+                    Text("享受美好的一天吧！")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                List {
+                    ForEach(todayTasks) { task in
+                        HStack(spacing: 12) {
+                            Button {
+                                viewModel.toggleComplete(task)
+                            } label: {
+                                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(task.isCompleted ? .blue : .gray)
+                            }
+                            .buttonStyle(.plain)
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(task.title)
+                                    .strikethrough(task.isCompleted)
+                                    .foregroundColor(task.isCompleted ? .secondary : .primary)
+                                
+                                if let dueDate = task.dueDate {
+                                    Text(dueDate.formattedTime)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                .listStyle(.inset)
+            }
+        }
+        .navigationTitle("今日")
+    }
+}
+
+// MARK: - Mac Notes View
+struct MacNotesView: View {
+    @ObservedObject private var sharedData = SharedDataManager.shared
+    @State private var selectedNote: Note?
+    @State private var isCreatingNote = false
+    @State private var searchText = ""
+    
+    private var filteredNotes: [Note] {
+        let notes = sharedData.notes
+        if searchText.isEmpty {
+            return notes
+        }
+        return notes.filter {
+            $0.title.localizedCaseInsensitiveContains(searchText) ||
+            $0.content.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+    
+    var body: some View {
+        HSplitView {
+            // 笔记列表
+            noteListPanel
+            
+            // 笔记详情/编辑
+            noteDetailPanel
+        }
+        .navigationTitle("笔记")
+        .toolbar {
+            ToolbarItemGroup {
+                Button {
+                    isCreatingNote = true
+                    selectedNote = nil
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+    }
+    
+    private var noteListPanel: some View {
+        VStack(spacing: 0) {
+            // 搜索栏
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.secondary)
+                TextField("搜索笔记...", text: $searchText)
+                    .textFieldStyle(.plain)
+            }
+            .padding(8)
+            .background(Color(.textBackgroundColor))
+            .cornerRadius(8)
+            .padding()
+            
+            Divider()
+            
+            if filteredNotes.isEmpty {
+                VStack(spacing: 16) {
+                    Image(systemName: "note.text")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    Text("还没有笔记")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                List(selection: $selectedNote) {
+                    ForEach(filteredNotes) { note in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(note.displayTitle)
+                                .font(.headline)
+                                .lineLimit(1)
+                            
+                            if !note.preview.isEmpty {
+                                Text(note.preview)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(2)
+                            }
+                            
+                            Text(note.updatedAt.formattedDateTime)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                        .tag(note)
+                    }
+                    .onDelete { indexSet in
+                        deleteNotes(at: indexSet)
+                    }
+                }
+                .listStyle(.inset)
+            }
+        }
+        .frame(minWidth: 250)
+    }
+    
+    @ViewBuilder
+    private var noteDetailPanel: some View {
+        if isCreatingNote || selectedNote != nil {
+            MacNoteEditorView(
+                note: selectedNote,
+                onSave: { title, content in
+                    saveNote(title: title, content: content)
+                },
+                onCancel: {
+                    isCreatingNote = false
+                }
+            )
+            .frame(minWidth: 400)
+        } else {
+            VStack(spacing: 16) {
+                Image(systemName: "note.text")
+                    .font(.system(size: 48))
+                    .foregroundColor(.secondary)
+                Text("选择或创建一个笔记")
+                    .font(.headline)
+                    .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+    
+    private func saveNote(title: String, content: String) {
+        if var note = selectedNote {
+            note.title = title
+            note.content = content
+            SharedDataManager.shared.updateNote(note)
+        } else {
+            SharedDataManager.shared.addNote(title: title, content: content)
+        }
+        isCreatingNote = false
+    }
+    
+    private func deleteNotes(at indexSet: IndexSet) {
+        for index in indexSet {
+            let note = filteredNotes[index]
+            SharedDataManager.shared.deleteNote(note)
+        }
+    }
+}
+
+// MARK: - Mac Note Editor View
+struct MacNoteEditorView: View {
+    let note: Note?
+    let onSave: (String, String) -> Void
+    let onCancel: () -> Void
+    
+    @State private var title: String = ""
+    @State private var content: String = ""
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // 工具栏
+            HStack {
+                if note == nil {
+                    Button("取消") {
+                        onCancel()
+                    }
+                }
+                
+                Spacer()
+                
+                Button("保存") {
+                    onSave(title, content)
+                }
+                .disabled(title.isEmpty && content.isEmpty)
+            }
+            .padding()
+            
+            Divider()
+            
+            // 标题
+            TextField("标题", text: $title)
+                .textFieldStyle(.plain)
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.horizontal)
+                .padding(.top)
+            
+            Divider()
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+            
+            // Markdown 编辑器
+            TextEditor(text: $content)
+                .font(.system(size: 14, design: .monospaced))
+                .scrollContentBackground(.hidden)
+                .padding(.horizontal)
+            
+            // Markdown 提示
+            HStack {
+                Image(systemName: "text.badge.checkmark")
+                    .font(.caption)
+                Text("支持 Markdown 格式")
+                    .font(.caption)
+                Spacer()
+                Text("\(content.count) 字符")
+                    .font(.caption)
+            }
+            .foregroundColor(.secondary)
+            .padding()
+        }
+        .onAppear {
+            if let note = note {
+                title = note.title
+                content = note.content
+            }
+        }
+        .onChange(of: note) { _, newNote in
+            if let newNote = newNote {
+                title = newNote.title
+                content = newNote.content
+            } else {
+                title = ""
+                content = ""
+            }
+        }
+    }
+}
+
+// MARK: - Mac Summary View
+struct MacSummaryView: View {
+    @ObservedObject var viewModel: TaskListViewModel
+    @State private var summary: DailySummary?
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                // 标题
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("每日总结")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        
+                        Text(Date().formattedDate)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                
+                // 统计卡片
+                HStack(spacing: 16) {
+                    SummaryStatCard(
+                        title: "已完成",
+                        value: "\(completedTodayCount)",
+                        icon: "checkmark.circle.fill",
+                        color: .green
+                    )
+                    
+                    SummaryStatCard(
+                        title: "待完成",
+                        value: "\(pendingCount)",
+                        icon: "circle",
+                        color: .orange
+                    )
+                    
+                    SummaryStatCard(
+                        title: "完成率",
+                        value: completionRateText,
+                        icon: "chart.pie.fill",
+                        color: .blue
+                    )
+                }
+                .padding(.horizontal)
+                
+                // 今日完成的任务
+                if !completedTodayTasks.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("今日完成")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        ForEach(completedTodayTasks) { task in
+                            HStack(spacing: 12) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                                
+                                Text(task.title)
+                                    .strikethrough()
+                                    .foregroundColor(.secondary)
+                                
+                                Spacer()
+                            }
+                            .padding(.horizontal)
+                            .padding(.vertical, 8)
+                            .background(Color(.controlBackgroundColor))
+                            .cornerRadius(8)
+                            .padding(.horizontal)
+                        }
+                    }
+                }
+                
+                Spacer()
+            }
+            .padding(.top)
+        }
+        .navigationTitle("总结")
+    }
+    
+    private var completedTodayTasks: [FlowTask] {
+        let calendar = Calendar.current
+        return viewModel.tasks.filter { task in
+            task.isCompleted && calendar.isDateInToday(task.updatedAt)
+        }
+    }
+    
+    private var completedTodayCount: Int {
+        completedTodayTasks.count
+    }
+    
+    private var pendingCount: Int {
+        viewModel.tasks.filter { !$0.isCompleted }.count
+    }
+    
+    private var completionRateText: String {
+        let total = completedTodayCount + pendingCount
+        guard total > 0 else { return "0%" }
+        let rate = Double(completedTodayCount) / Double(total) * 100
+        return "\(Int(rate))%"
+    }
+}
+
+// MARK: - Summary Stat Card
+struct SummaryStatCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 28))
+                .foregroundColor(color)
+            
+            Text(value)
+                .font(.system(size: 32, weight: .bold, design: .rounded))
+            
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 20)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(color.opacity(0.1))
+        )
+    }
+}
+
+// MARK: - Settings View
+struct SettingsView: View {
+    var body: some View {
+        TabView {
+            GeneralSettingsView()
+                .tabItem {
+                    Label("通用", systemImage: "gear")
+                }
+            
+            StickyWindowSettingsView()
+                .tabItem {
+                    Label("桌面贴图", systemImage: "macwindow")
+                }
+            
+            ShortcutSettingsView()
+                .tabItem {
+                    Label("快捷键", systemImage: "keyboard")
+                }
+            
+            NotificationSettingsView()
+                .tabItem {
+                    Label("通知", systemImage: "bell")
+                }
+        }
+        .frame(width: 500, height: 380)
+    }
+}
+
+struct GeneralSettingsView: View {
+    @AppStorage("showMenuBarIcon") private var showMenuBarIcon = true
+    @AppStorage("launchAtLogin") private var launchAtLogin = false
+    
+    var body: some View {
+        Form {
+            Toggle("在菜单栏显示图标", isOn: $showMenuBarIcon)
+            Toggle("登录时启动", isOn: $launchAtLogin)
+        }
+        .padding()
+    }
+}
+
+struct NotificationSettingsView: View {
+    @AppStorage("enableDailySummary") private var enableDailySummary = true
+    @AppStorage("summaryHour") private var summaryHour = 21
+    
+    var body: some View {
+        Form {
+            Toggle("启用每日总结", isOn: $enableDailySummary)
+            
+            if enableDailySummary {
+                Picker("总结时间", selection: $summaryHour) {
+                    ForEach(0..<24, id: \.self) { hour in
+                        Text("\(hour):00").tag(hour)
+                    }
+                }
+            }
+        }
+        .padding()
+    }
+}
+
+// MARK: - Sticky Window Settings View
+struct StickyWindowSettingsView: View {
+    @AppStorage("stickyWindowLevel") private var windowLevel = 0 // 0: floating, 1: normal
+    @AppStorage("floatingBallAutoSnap") private var autoSnap = true
+    @AppStorage("showFloatingBallOnLaunch") private var showOnLaunch = true
+    @AppStorage("stickyWindowOpacity") private var windowOpacity = 1.0
+    @AppStorage("floatingBallSize") private var ballSize = 1.0
+    
+    var body: some View {
+        Form {
+            Section("桌面贴图") {
+                Picker("窗口层级", selection: $windowLevel) {
+                    Text("始终置顶").tag(0)
+                    Text("普通窗口").tag(1)
+                }
+                .onChange(of: windowLevel) { _, newValue in
+                    Task { @MainActor in
+                        DesktopStickyWindowManager.shared.setAlwaysOnTop(newValue == 0)
+                    }
+                }
+                
+                HStack {
+                    Text("窗口透明度")
+                    Slider(value: $windowOpacity, in: 0.5...1.0, step: 0.1)
+                    Text("\(Int(windowOpacity * 100))%")
+                        .frame(width: 40)
+                }
+            }
+            
+            Section("悬浮球") {
+                Toggle("启动时显示悬浮球", isOn: $showOnLaunch)
+                
+                Toggle("自动贴边", isOn: $autoSnap)
+                    .help("拖动悬浮球后自动贴到屏幕边缘")
+                
+                HStack {
+                    Text("悬浮球大小")
+                    Slider(value: $ballSize, in: 0.8...1.5, step: 0.1)
+                    Text("\(Int(ballSize * 100))%")
+                        .frame(width: 40)
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .padding()
+    }
+}
+
+// MARK: - Shortcut Settings View
+struct ShortcutSettingsView: View {
+    var body: some View {
+        Form {
+            Section("应用快捷键") {
+                ShortcutRow(title: "新建任务", shortcut: "⌘N")
+                ShortcutRow(title: "新建笔记", shortcut: "⌘⇧N")
+                ShortcutRow(title: "显示/隐藏悬浮窗", shortcut: "⌘⇧F")
+                ShortcutRow(title: "显示/隐藏桌面贴图", shortcut: "⌘⇧T")
+            }
+            
+            Section {
+                Text("以上快捷键仅在应用激活时有效。")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Text("如需设置全局快捷键，请前往系统设置 > 键盘 > 键盘快捷键 > App 快捷键")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .padding()
+    }
+}
+
+struct ShortcutRow: View {
+    let title: String
+    let shortcut: String
+    
+    var body: some View {
+        HStack {
+            Text(title)
+            Spacer()
+            Text(shortcut)
+                .font(.system(.body, design: .monospaced))
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color(.controlBackgroundColor))
+                .cornerRadius(4)
+        }
+    }
+}
+#endif
