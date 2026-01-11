@@ -8,6 +8,11 @@
   <strong>🚀 优雅高效的 macOS 原生任务管理与笔记应用</strong>
 </p>
 
+
+<img width="1322" height="738" alt="image" src="https://github.com/user-attachments/assets/b7611792-6acc-4d39-b3ea-31cf256c2496" />
+<img width="1132" height="592" alt="image" src="https://github.com/user-attachments/assets/a1b43e1a-b0ee-4922-9c9c-1f9bdbefd958" />
+
+
 <p align="center">
   <a href="## ✨ 功能特性">功能特性</a> •
   <a href="## 📥 安装">安装</a> •
