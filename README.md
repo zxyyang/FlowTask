@@ -9,12 +9,12 @@
 </p>
 
 <p align="center">
-  <a href="#功能特性">功能特性</a> •
-  <a href="#安装">安装</a> •
-  <a href="#技术架构">技术架构</a> •
-  <a href="#截图预览">截图预览</a> •
-  <a href="#开发指南">开发指南</a> •
-  <a href="#许可证">许可证</a>
+  <a href="## ✨ 功能特性">功能特性</a> •
+  <a href="## 📥 安装">安装</a> •
+  <a href="## 🏗️ 技术架构">技术架构</a> •
+  <a href="## � 截图预览">截图预览</a> •
+  <a href="## 🛠️ 开发指南">开发指南</a> •
+  <a href="## 📄 许可证">许可证</a>
 </p>
 
 <p align="center">
@@ -398,8 +398,7 @@ A: FlowTask 支持 GitHub Flavored Markdown (GFM)，包括表格、任务列表�
 
 ## 📬 联系方式
 
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/FlowTask/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/FlowTask/discussions)
+- **Issues**: 请直接提交Issues 和您需要的功能
 
 ---
 
