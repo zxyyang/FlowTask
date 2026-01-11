@@ -3,10 +3,99 @@ import UniformTypeIdentifiers
 
 #if os(macOS)
 
+// MARK: - 独立设置窗口视图
+struct SettingsWindowView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedCategory: SettingsCategory = .appearance
+    @State private var animateContent = false
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            // 左侧分类列表
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(SettingsCategory.allCases) { category in
+                    sidebarCategoryButton(category)
+                }
+                Spacer()
+            }
+            .padding(12)
+            .frame(width: 140)
+            .background(Color(.windowBackgroundColor).opacity(0.5))
+            
+            Divider()
+            
+            // 右侧内容区域
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    switch selectedCategory {
+                    case .appearance:
+                        AppearanceSettingsContent()
+                    case .task:
+                        TaskSettingsContent()
+                    case .notes:
+                        NotesSettingsContent()
+                    case .calendar:
+                        CalendarSettingsContent()
+                    case .stickyWindow:
+                        StickyWindowSettingsContent()
+                    case .about:
+                        AboutSettingsContent()
+                    }
+                }
+                .opacity(animateContent ? 1 : 0)
+                .offset(y: animateContent ? 0 : 10)
+                .padding(24)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .frame(minWidth: 650, minHeight: 500)
+        .background(Color(.windowBackgroundColor))
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.2)) {
+                animateContent = true
+            }
+        }
+    }
+    
+    private func sidebarCategoryButton(_ category: SettingsCategory) -> some View {
+        let isSelected = selectedCategory == category
+        
+        return Button {
+            animateContent = false
+            withAnimation(.easeInOut(duration: 0.1)) {
+                selectedCategory = category
+            }
+            withAnimation(.easeOut(duration: 0.2).delay(0.05)) {
+                animateContent = true
+            }
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: category.icon)
+                    .font(.system(size: 13))
+                    .frame(width: 18)
+                Text(category.rawValue)
+                    .font(.system(size: 13))
+                Spacer()
+            }
+            .foregroundColor(isSelected ? .white : .primary)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(isSelected ? Color.accentColor : Color.clear)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 6))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 // MARK: - 设置分类
 enum SettingsCategory: String, CaseIterable, Identifiable {
     case appearance = "外观"
     case task = "任务"
+    case notes = "笔记"
     case calendar = "日历"
     case stickyWindow = "桌面贴图"
     case about = "关于"
@@ -17,6 +106,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         switch self {
         case .appearance: return "paintbrush"
         case .task: return "checkmark.circle"
+        case .notes: return "doc.text"
         case .calendar: return "calendar"
         case .stickyWindow: return "macwindow"
         case .about: return "info.circle"
@@ -24,7 +114,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     }
 }
 
-// MARK: - 设置视图
+// MARK: - 设置视图 (保留用于兼容)
 struct SettingsView: View {
     @State private var selectedCategory: SettingsCategory = .appearance
     @State private var animateContent = false
@@ -52,6 +142,8 @@ struct SettingsView: View {
                         AppearanceSettingsContent()
                     case .task:
                         TaskSettingsContent()
+                    case .notes:
+                        NotesSettingsContent()
                     case .calendar:
                         CalendarSettingsContent()
                     case .stickyWindow:
@@ -481,6 +573,221 @@ struct AppearanceSettingsContent: View {
             .contentShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - 笔记设置
+struct NotesSettingsContent: View {
+    @ObservedObject private var settings = SettingsManager.shared
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("笔记")
+                .font(.title2)
+                .fontWeight(.semibold)
+            
+            // Muya 编辑器设置
+            muyaEditorSettings
+            
+            // 自动保存设置
+            autoSaveSettings
+            
+            // 图片和导出设置
+            imageAndExportSettings
+        }
+    }
+    
+    // MARK: - Muya 编辑器设置
+    private var muyaEditorSettings: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // 笔记主题（合并编辑器主题和内容样式）
+            settingRow(
+                title: "笔记主题",
+                description: "笔记的整体外观样式"
+            ) {
+                Picker("", selection: Binding(
+                    get: { MuyaContentTheme(rawValue: settings.muyaContentTheme) ?? .default },
+                    set: { settings.muyaContentTheme = $0.rawValue }
+                )) {
+                    ForEach(MuyaContentTheme.allCases, id: \.rawValue) { theme in
+                        Text(theme.displayName).tag(theme)
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(width: 120)
+            }
+            
+            Divider()
+            
+            // 编辑模式
+            settingRow(
+                title: "编辑模式",
+                description: "Markdown 编辑器的编辑模式"
+            ) {
+                Picker("", selection: $settings.muyaMode) {
+                    ForEach(MuyaMode.allCases, id: \.rawValue) { mode in
+                        Text(mode.displayName).tag(mode)
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(width: 120)
+            }
+            
+            Divider()
+            
+            // 界面元素显示
+            VStack(alignment: .leading, spacing: 12) {
+                Text("界面元素")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                
+                Toggle("显示工具栏", isOn: Binding(
+                    get: { settings.muyaToolbarVisible },
+                    set: { settings.setMuyaToolbarVisible($0) }
+                ))
+                
+                Toggle("显示状态栏", isOn: Binding(
+                    get: { settings.muyaStatusBarVisible },
+                    set: { settings.setMuyaStatusBarVisible($0) }
+                ))
+            }
+        }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 10).fill(Color(.controlBackgroundColor)))
+    }
+    
+    // MARK: - 自动保存设置
+    private var autoSaveSettings: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Toggle(isOn: $settings.editorAutoSave) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("自动保存")
+                        .font(.subheadline)
+                    Text("自动保存编辑内容")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            if settings.editorAutoSave {
+                settingRow(title: "保存间隔", description: nil) {
+                    Picker("", selection: $settings.editorAutoSaveInterval) {
+                        Text("10秒").tag(10)
+                        Text("30秒").tag(30)
+                        Text("60秒").tag(60)
+                        Text("120秒").tag(120)
+                    }
+                    .pickerStyle(.menu)
+                    .frame(width: 80)
+                }
+                .padding(.leading, 20)
+            }
+        }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 10).fill(Color(.controlBackgroundColor)))
+    }
+    
+    // MARK: - 图片和导出设置
+    private var imageAndExportSettings: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // 图片存储目录 - 可选择
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("图片存储目录")
+                        .font(.subheadline)
+                    Text("粘贴图片的保存位置")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+                
+                HStack(spacing: 8) {
+                    Text(settings.imageStorageDirectory.isEmpty ? "应用内部" : settings.imageStorageDirectory)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                        .frame(maxWidth: 150, alignment: .trailing)
+                    
+                    Button {
+                        selectImageStorageDirectory()
+                    } label: {
+                        Image(systemName: "folder")
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .help("选择图片存储目录")
+                }
+            }
+            
+            Divider()
+            
+            settingRow(
+                title: "图片存储模式",
+                description: nil
+            ) {
+                Picker("", selection: $settings.imageStorageMode) {
+                    ForEach(ImageStorageMode.allCases, id: \.rawValue) { mode in
+                        Text(mode.displayName).tag(mode)
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(width: 120)
+            }
+            
+            Divider()
+            
+            settingRow(
+                title: "默认导出格式",
+                description: nil
+            ) {
+                Picker("", selection: $settings.defaultExportFormat) {
+                    ForEach(ExportFormat.allCases, id: \.rawValue) { format in
+                        Text(format.displayName).tag(format)
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(width: 120)
+            }
+        }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 10).fill(Color(.controlBackgroundColor)))
+    }
+    
+    // MARK: - 选择图片存储目录
+    private func selectImageStorageDirectory() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.message = "选择图片存储目录"
+        panel.prompt = "选择"
+        
+        if panel.runModal() == .OK, let url = panel.url {
+            // 保存相对路径或绝对路径
+            settings.setImageStorageDirectory(url.path)
+        }
+    }
+    
+    // MARK: - 设置行组件
+    @ViewBuilder
+    private func settingRow<Content: View>(
+        title: String,
+        description: String?,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.subheadline)
+                if let desc = description {
+                    Text(desc)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            Spacer()
+            content()
+        }
     }
 }
 

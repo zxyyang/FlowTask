@@ -1,0 +1,807 @@
+/*
+ * Darcula Theme - IntelliJ IDEA Style
+ * Based on JetBrains Darcula color scheme
+ */
+
+:root {
+    /* Darcula 核心颜色 */
+    --bg-color: #2B2B2B;
+    --side-bar-bg-color: #3C3F41;
+    --text-color: #A9B7C6;
+    
+    --select-text-bg-color: #214283;
+    --select-text-font-color: #A9B7C6;
+    
+    --item-hover-bg-color: #0D293E;
+    --control-text-color: #A9B7C6;
+    --control-text-hover-color: #FFFFFF;
+    --window-border: 1px solid #323232;
+    
+    --active-file-bg-color: #0D293E;
+    --active-file-border-color: #4E94CE;
+    --active-file-text-color: #FFFFFF;
+    
+    --primary-color: #589DF6;
+    --item-hover-text-color: #FFFFFF;
+    
+    --rawblock-edit-panel-bd: #313335;
+    --search-select-bg-color: #32593D;
+    
+    /* 代码块背景 */
+    --code-block-bg-color: #2B2B2B;
+    
+    /* 行内代码 */
+    --inline-code-color: #6A8759;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    background: #2B2B2B !important;
+    background: var(--bg-color) !important;
+    fill: currentColor;
+    line-height: 1.6;
+    color: #A9B7C6 !important;
+}
+
+#write {
+    max-width: 914px;
+    margin: 0 auto;
+    padding: 30px 60px;
+    color: #A9B7C6 !important;
+}
+
+/* 强制所有文本为白色 */
+#write * {
+    color: #A9B7C6;
+}
+
+@media only screen and (min-width: 1400px) {
+    #write {
+        max-width: 1024px;
+    }
+}
+
+@media only screen and (min-width: 1800px) {
+    #write {
+        max-width: 1200px;
+    }
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+div.code-tooltip-content {
+    color: #A9B7C6;
+    border-color: transparent;
+}
+
+div.code-tooltip,
+.md-hover-tip .md-arrow:after {
+    background: #313335;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* 段落和普通文本 */
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #A9B7C6 !important;
+}
+
+p, ul, dd, ol, hr, address, pre, table, iframe {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #A9B7C6 !important;
+}
+
+/* 标题样式 */
+h1, h2, h3, h4, h5, h6 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    clear: both;
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+    color: #A9B7C6 !important;
+}
+
+h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+}
+
+h2 {
+    font-size: 1.75rem;
+    line-height: 2rem;
+    margin-bottom: 1.25rem;
+    margin-top: 1.75rem;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    margin-bottom: 0.875rem;
+}
+
+h5 {
+    font-size: 1rem;
+    line-height: 1.375rem;
+    margin-bottom: 0.75rem;
+    font-weight: bold;
+}
+
+h6 {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin-bottom: 0.625rem;
+}
+
+/* 链接 */
+a {
+    color: #287BDE;
+    text-decoration: none;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+a:hover {
+    color: #589DF6;
+    text-decoration: underline;
+}
+
+/* 粗体和斜体 */
+b, th, dt, strong {
+    font-weight: bold;
+    color: #A9B7C6 !important;
+}
+
+i, em, dfn, cite {
+    font-style: italic;
+    color: #808080 !important;
+}
+
+/* 分隔线 */
+hr {
+    height: 1px;
+    border: 0;
+    margin: 24px 0 !important;
+    background: #4E5254;
+}
+
+/* 引用块 */
+blockquote {
+    padding-left: 1.875rem;
+    margin: 0 0 1.875rem 1.875rem;
+    border-left: solid 3px #629755;
+    padding-left: 30px;
+    margin-top: 35px;
+    color: #808080;
+    font-style: italic;
+}
+
+/* 代码相关 */
+pre, code, kbd, tt, var {
+    font-size: 0.875em;
+    font-family: "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas, monospace;
+}
+
+code, tt, var {
+    background: #313335;
+    color: #6A8759;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+kbd {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #A9B7C6;
+    background-color: #3C3F41;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.25);
+}
+
+/* 代码块 - 关键样式 */
+.md-fences {
+    background-color: #2B2B2B !important;
+    background-color: var(--code-block-bg-color) !important;
+    border-radius: 5px;
+    padding: 10px 10px 10px 30px;
+    margin-bottom: 20px;
+}
+
+pre.md-fences {
+    padding: 10px 10px 10px 30px;
+    margin-bottom: 20px;
+    background: #2B2B2B !important;
+}
+
+.CodeMirror-gutters {
+    background: #2B2B2B !important;
+    border-right: 1px solid #4E5254;
+}
+
+.CodeMirror {
+    background: #2B2B2B !important;
+    color: #A9B7C6 !important;
+}
+
+.CodeMirror.cm-s-inner {
+    border-radius: 5px;
+    padding: 10px;
+    background: #2B2B2B !important;
+}
+
+/* CodeMirror 语法高亮 - Darcula 风格 */
+.cm-s-inner .CodeMirror-gutters {
+    color: #606366;
+    background-color: #2B2B2B !important;
+    border-right: 1px solid #4E5254;
+}
+
+.cm-s-inner .CodeMirror-guttermarker {
+    color: #A9B7C6 !important;
+}
+
+.cm-s-inner .CodeMirror-guttermarker-subtle {
+    color: #606366 !important;
+}
+
+.cm-s-inner .CodeMirror-linenumber {
+    color: #606366 !important;
+}
+
+.cm-s-inner .CodeMirror-cursor {
+    border-left: 2px solid #A9B7C6;
+}
+
+.CodeMirror div.CodeMirror-cursor {
+    border-left: 2px solid #A9B7C6;
+    z-index: 3;
+}
+
+.cm-s-inner span.cm-comment {
+    color: #808080;
+    font-style: italic;
+}
+
+.cm-s-inner span.cm-atom {
+    color: #CC7832;
+}
+
+.cm-s-inner span.cm-number {
+    color: #6897BB;
+}
+
+.cm-s-inner span.cm-keyword {
+    color: #CC7832;
+}
+
+.cm-s-inner span.cm-def {
+    color: #FFC66D;
+}
+
+.cm-s-inner span.cm-variable {
+    color: #A9B7C6;
+}
+
+.cm-s-inner span.cm-variable-2 {
+    color: #9876AA;
+}
+
+.cm-s-inner span.cm-variable-3,
+.cm-s-inner span.cm-type {
+    color: #A9B7C6;
+}
+
+.cm-s-inner span.cm-property {
+    color: #9876AA;
+}
+
+.cm-s-inner span.cm-operator {
+    color: #A9B7C6;
+}
+
+.cm-s-inner span.cm-string {
+    color: #6A8759;
+}
+
+.cm-s-inner span.cm-string-2 {
+    color: #6A8759;
+}
+
+.cm-s-inner span.cm-meta {
+    color: #BBB529;
+}
+
+.cm-s-inner span.cm-qualifier {
+    color: #6A8759;
+}
+
+.cm-s-inner span.cm-builtin {
+    color: #A9B7C6;
+}
+
+.cm-s-inner span.cm-bracket {
+    color: #A9B7C6;
+}
+
+.cm-s-inner span.cm-tag {
+    color: #E8BF6A;
+}
+
+.cm-s-inner span.cm-attribute {
+    color: #BABABA;
+}
+
+.cm-s-inner span.cm-header {
+    color: #A9B7C6;
+}
+
+.cm-s-inner span.cm-quote {
+    color: #629755;
+}
+
+.cm-s-inner span.cm-hr {
+    color: #808080;
+}
+
+.cm-s-inner span.cm-link {
+    color: #287BDE;
+}
+
+.cm-s-inner span.cm-error {
+    color: #BC3F3C;
+    background: rgba(188, 63, 60, 0.1);
+}
+
+.cm-s-inner .CodeMirror-matchingbracket {
+    background: #3B514D;
+    color: #FFEF28 !important;
+    font-weight: bold;
+}
+
+.cm-s-inner .CodeMirror-line::selection,
+.cm-s-inner .CodeMirror-line > span::selection,
+.cm-s-inner .CodeMirror-line > span > span::selection {
+    background: #214283;
+}
+
+.cm-s-inner .CodeMirror-line::-moz-selection,
+.cm-s-inner .CodeMirror-line > span::-moz-selection,
+.cm-s-inner .CodeMirror-line > span > span::-moz-selection {
+    background: #214283;
+}
+
+.CodeMirror-selectedtext,
+.CodeMirror-selected {
+    background: #214283;
+    color: #A9B7C6 !important;
+    text-shadow: none;
+}
+
+/* 列表 */
+ul, ol {
+    padding: 0 0 0 1.875rem;
+    color: #A9B7C6 !important;
+}
+
+ul {
+    list-style: square;
+}
+
+ol {
+    list-style: decimal;
+}
+
+ul ul, ol ol, ul ol, ol ul {
+    margin: 0;
+}
+
+li {
+    color: #A9B7C6 !important;
+}
+
+/* 表格 */
+table {
+    max-width: 100%;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: #2B2B2B !important;
+}
+
+th, td {
+    padding: 8px 12px;
+    vertical-align: top;
+    border: solid 1px #5A5A5A !important;
+    color: #A9B7C6 !important;
+}
+
+th {
+    background: #3C3F41 !important;
+    color: #A9B7C6 !important;
+    font-weight: 600;
+}
+
+td {
+    background: #2B2B2B !important;
+}
+
+tr:nth-child(2n) td {
+    background: #313335 !important;
+}
+
+/* 任务列表 */
+.task-list {
+    padding-left: 0;
+}
+
+.md-task-list-item {
+    padding-left: 1.25rem;
+}
+
+.md-task-list-item > input {
+    top: auto;
+}
+
+.md-task-list-item > input:before {
+    content: "";
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid #6B6B6B;
+    background-color: #2B2B2B;
+    margin-top: -0.4rem;
+    border-radius: 2px;
+}
+
+.md-task-list-item > input:checked:before,
+.md-task-list-item > input[checked]:before {
+    content: '\221A';
+    font-size: 0.625rem;
+    line-height: 0.625rem;
+    color: #629755;
+    background-color: #2D3A2E;
+    border-color: #629755;
+}
+
+/* 高亮 */
+mark {
+    background: #32593D;
+    color: #A9B7C6;
+}
+
+/* 脚注 */
+sup.md-footnote {
+    background-color: #3C3F41;
+    color: #589DF6;
+}
+
+/* 选择文本 */
+::-moz-selection {
+    background: #214283;
+    color: #A9B7C6;
+    text-shadow: none;
+}
+
+*.in-text-selection,
+::selection {
+    background: #214283;
+    color: #A9B7C6;
+    text-shadow: none;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2B2B2B;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #5A5A5A;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6B6B6B;
+}
+
+/* TOC */
+.md-toc-item {
+    color: #287BDE;
+}
+
+#write div.md-toc-tooltip {
+    background-color: #313335;
+}
+
+/* 搜索高亮 */
+.md-search-hit {
+    background: #32593D;
+    color: #A9B7C6;
+}
+
+.md-search-hit * {
+    color: #A9B7C6;
+}
+
+/* Alert 样式 */
+.md-alert-text-note {
+    color: #589DF6;
+}
+
+.md-alert-text-important {
+    color: #9876AA;
+}
+
+.md-alert-text-warning {
+    color: #CC7832;
+}
+
+/* 图片 */
+.md-image > .md-meta {
+    color: #808080;
+    background: transparent;
+}
+
+.md-expand.md-image > .md-meta {
+    color: #A9B7C6;
+}
+
+/* 数学公式 */
+.md-inline-math script {
+    color: #9876AA;
+}
+
+/* 表格编辑 */
+.ty-table-edit {
+    border-top: 1px solid #4E5254;
+    background-color: #2B2B2B;
+}
+
+/* 模态框 */
+.modal-content {
+    background: var(--bg-color);
+    border: 0;
+}
+
+.modal-content input {
+    background-color: #313335;
+    color: #A9B7C6;
+}
+
+/* 按钮 */
+.btn,
+.btn .btn-default {
+    background: transparent;
+    color: #A9B7C6;
+}
+
+.btn-primary {
+    color: white;
+}
+
+
+/* ==================== Prism.js 语法高亮 - Darcula 风格 ==================== */
+
+/* 代码块容器 */
+.mu-code-block {
+    background-color: #2B2B2B !important;
+    border-radius: 5px;
+}
+
+.mu-code-block pre {
+    background-color: #2B2B2B !important;
+    color: #A9B7C6 !important;
+}
+
+.mu-code-block code {
+    background-color: transparent !important;
+    color: #A9B7C6 !important;
+}
+
+/* Prism token 样式 - Darcula 配色 */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #808080 !important;
+    font-style: italic;
+}
+
+.token.punctuation {
+    color: #A9B7C6 !important;
+}
+
+.token.namespace {
+    opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #CC7832 !important;
+}
+
+.token.boolean,
+.token.number {
+    color: #6897BB !important;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #6A8759 !important;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+    color: #A9B7C6 !important;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+    color: #FFC66D !important;
+}
+
+.token.keyword {
+    color: #CC7832 !important;
+    font-weight: bold;
+}
+
+.token.regex,
+.token.important {
+    color: #CC7832 !important;
+}
+
+.token.important,
+.token.bold {
+    font-weight: bold;
+}
+
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}
+
+/* SQL 特定样式 */
+.language-sql .token.keyword {
+    color: #CC7832 !important;
+    font-weight: bold;
+}
+
+.language-sql .token.string {
+    color: #6A8759 !important;
+}
+
+.language-sql .token.number {
+    color: #6897BB !important;
+}
+
+.language-sql .token.operator {
+    color: #A9B7C6 !important;
+}
+
+.language-sql .token.function {
+    color: #FFC66D !important;
+}
+
+/* Java 特定样式 */
+.language-java .token.keyword {
+    color: #CC7832 !important;
+    font-weight: bold;
+}
+
+.language-java .token.class-name {
+    color: #A9B7C6 !important;
+}
+
+.language-java .token.function {
+    color: #FFC66D !important;
+}
+
+.language-java .token.annotation {
+    color: #BBB529 !important;
+}
+
+/* JavaScript/TypeScript 特定样式 */
+.language-javascript .token.keyword,
+.language-typescript .token.keyword {
+    color: #CC7832 !important;
+    font-weight: bold;
+}
+
+.language-javascript .token.function,
+.language-typescript .token.function {
+    color: #FFC66D !important;
+}
+
+.language-javascript .token.string,
+.language-typescript .token.string {
+    color: #6A8759 !important;
+}
+
+/* Python 特定样式 */
+.language-python .token.keyword {
+    color: #CC7832 !important;
+    font-weight: bold;
+}
+
+.language-python .token.builtin {
+    color: #8888C6 !important;
+}
+
+.language-python .token.decorator {
+    color: #BBB529 !important;
+}
+
+/* 行号样式 */
+.line-numbers .line-numbers-rows {
+    border-right: 1px solid #4E5254;
+}
+
+.line-numbers-rows > span:before {
+    color: #606366 !important;
+}
+
+/* 代码块内的选中文本 */
+.mu-code-block ::selection {
+    background: #214283 !important;
+    color: #A9B7C6 !important;
+}
+
+.mu-code-block ::-moz-selection {
+    background: #214283 !important;
+    color: #A9B7C6 !important;
+}

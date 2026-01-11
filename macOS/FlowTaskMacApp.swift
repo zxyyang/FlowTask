@@ -115,6 +115,13 @@ struct FlowTaskMacApp: App {
         .commands {
             CommandGroup(replacing: .newItem) {}
         }
+        
+        // 独立设置窗口
+        Window("设置", id: "settings") {
+            SettingsWindowView()
+        }
+        .windowResizability(.contentSize)
+        .defaultSize(width: 700, height: 550)
     }
 }
 
@@ -458,18 +465,17 @@ extension AppDelegate: NSMenuDelegate {
 
 struct MainContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openWindow) private var openWindow
     @StateObject private var viewModel = TaskListViewModel()
     @ObservedObject private var sharedData = SharedDataManager.shared
     @State private var selectedTab: NavigationTab = .statistics // 默认打开统计页面
-    @State private var sidebarCollapsed = false
     @State private var hoveredTab: NavigationTab?
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
-    private var sidebarWidth: CGFloat {
-        sidebarCollapsed ? 60 : 200
-    }
+    private let sidebarWidth: CGFloat = 200
     
     var body: some View {
-        NavigationSplitView(columnVisibility: .constant(.all)) {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 4) {
@@ -484,7 +490,7 @@ struct MainContentView: View {
                 
                 Spacer()
                 
-                // 设置按钮
+                // 设置按钮 - 打开独立窗口
                 settingsButton
                     .padding(.horizontal, 12)
                     .padding(.bottom, 12)
@@ -494,18 +500,6 @@ struct MainContentView: View {
             detailView
         }
         .navigationSplitViewStyle(.balanced)
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        sidebarCollapsed.toggle()
-                    }
-                } label: {
-                    Image(systemName: "sidebar.leading")
-                }
-                .help(sidebarCollapsed ? "展开侧边栏" : "收起侧边栏")
-            }
-        }
         .onAppear {
             setupData()
             setupNotificationObserver()
@@ -547,28 +541,24 @@ struct MainContentView: View {
     
     // MARK: - Settings Button
     private var settingsButton: some View {
-        let isSelected = selectedTab == .settings
-        
-        return Button {
-            selectedTab = .settings
+        Button {
+            openWindow(id: "settings")
         } label: {
             HStack(spacing: 10) {
                 Image(systemName: "gearshape")
                     .font(.system(size: 14))
                     .frame(width: 20, alignment: .center)
-                if !sidebarCollapsed {
-                    Text("设置")
-                        .lineLimit(1)
-                    Spacer()
-                }
+                Text("设置")
+                    .lineLimit(1)
+                Spacer()
             }
-            .foregroundStyle(isSelected ? .primary : .secondary)
+            .foregroundStyle(.secondary)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(isSelected ? Color.accentColor.opacity(0.22) : Color.clear)
+                    .fill(Color.clear)
             )
             .contentShape(Rectangle())
         }
@@ -587,8 +577,6 @@ struct MainContentView: View {
             MacNotesView()
         case .statistics:
             StatisticsView()
-        case .settings:
-            SettingsView()
         }
     }
 
@@ -603,11 +591,9 @@ struct MainContentView: View {
                 Image(systemName: systemImage)
                     .font(.system(size: 14))
                     .frame(width: 20, alignment: .center)
-                if !sidebarCollapsed {
-                    Text(title)
-                        .lineLimit(1)
-                    Spacer()
-                }
+                Text(title)
+                    .lineLimit(1)
+                Spacer()
             }
             .foregroundStyle(isSelected ? .primary : .secondary)
             .padding(.horizontal, 12)
@@ -634,7 +620,7 @@ struct MainContentView: View {
 }
 
 enum NavigationTab: Hashable {
-    case tasks, today, notes, statistics, settings
+    case tasks, today, notes, statistics
 }
 
 private struct FixedSidebarColumnWidth: ViewModifier {

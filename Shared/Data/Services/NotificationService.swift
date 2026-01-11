@@ -4,7 +4,6 @@ import Combine
 
 #if os(macOS)
 import AppKit
-#endif
 
 // MARK: - 通知服务
 @MainActor
@@ -408,3 +407,5 @@ class NotificationService: ObservableObject {
         }
     }
 }
+
+#endif

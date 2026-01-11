@@ -475,6 +475,37 @@ class SettingsManager: ObservableObject {
     @AppStorage("customDueDateValue") var customDueDateValue: Int = 1
     @AppStorage("customDueDateUnit") private var customDueDateUnitRaw: String = TimeUnit.hours.rawValue
     
+    // 编辑器主题设置
+    @AppStorage("editorTheme") private var editorThemeRaw: String = "auto"
+    
+    #if os(macOS)
+    // Muya 编辑器设置
+    @AppStorage("muyaTheme") private var muyaThemeRaw: String = "auto"
+    @AppStorage("muyaMode") private var muyaModeRaw: String = "wysiwyg"
+    @AppStorage("muyaToolbarVisible") var muyaToolbarVisible: Bool = true
+    @AppStorage("muyaStatusBarVisible") var muyaStatusBarVisible: Bool = true
+    @AppStorage("muyaContentTheme") private var muyaContentThemeRaw: String = "default"
+    #endif
+    
+    // 图片存储设置
+    // Requirements: 2.4, 2.1.7
+    @AppStorage("imageStorageDirectory") var imageStorageDirectory: String = "images"
+    @AppStorage("imageStorageMode") private var imageStorageModeRaw: String = ImageStorageMode.localDirectory.rawValue
+    
+    // 导出设置
+    // Requirements: 1.1
+    @AppStorage("defaultExportFormat") private var defaultExportFormatRaw: String = ExportFormat.markdown.rawValue
+    
+    // 编辑器其他设置
+    @AppStorage("editorFontSize") var editorFontSize: Double = 16.0
+    @AppStorage("editorLineHeight") var editorLineHeight: Double = 1.6
+    @AppStorage("editorAutoSave") var editorAutoSave: Bool = true
+    @AppStorage("editorAutoSaveInterval") var editorAutoSaveInterval: Int = 30 // 秒
+    @AppStorage("editorSpellCheck") var editorSpellCheck: Bool = false
+    @AppStorage("editorShowLineNumbers") var editorShowLineNumbers: Bool = false
+    @AppStorage("editorTabSize") var editorTabSize: Int = 4
+    @AppStorage("editorWordWrap") var editorWordWrap: Bool = true
+    
     @Published var calendarSubscriptions: [CalendarSubscription] = []
     
     private let subscriptionsKey = "calendarSubscriptions"
@@ -588,6 +619,123 @@ class SettingsManager: ObservableObject {
             }
         }
     }
+    
+    /// 编辑器主题设置 ("auto" 跟随系统, 或具体主题名)
+    var editorTheme: String {
+        get { editorThemeRaw }
+        set {
+            editorThemeRaw = newValue
+            objectWillChange.send()
+            // 通知编辑器主题已改变
+            NotificationCenter.default.post(name: .editorThemeChanged, object: nil)
+        }
+    }
+    
+    /// 获取当前应该使用的编辑器主题
+    func getCurrentEditorTheme() -> MuyaTheme {
+        if editorTheme == "auto" {
+            return MuyaTheme.current
+        }
+        return MuyaTheme(rawValue: editorTheme) ?? MuyaTheme.current
+    }
+    
+    #if os(macOS)
+    // MARK: - Muya 编辑器设置
+    
+    /// Muya 主题 ("auto" 跟随系统, "light", "dark")
+    var muyaTheme: String {
+        get { muyaThemeRaw }
+        set {
+            muyaThemeRaw = newValue
+            objectWillChange.send()
+            NotificationCenter.default.post(name: .muyaThemeChanged, object: nil)
+        }
+    }
+    
+    /// 获取当前应该使用的 Muya 主题
+    func getCurrentMuyaTheme() -> MuyaTheme {
+        if muyaTheme == "auto" {
+            return MuyaTheme.current
+        }
+        return MuyaTheme(rawValue: muyaTheme) ?? MuyaTheme.current
+    }
+    
+    /// Muya 编辑模式
+    var muyaMode: MuyaMode {
+        get { MuyaMode(rawValue: muyaModeRaw) ?? .wysiwyg }
+        set {
+            muyaModeRaw = newValue.rawValue
+            objectWillChange.send()
+            NotificationCenter.default.post(name: .muyaModeChanged, object: nil)
+        }
+    }
+    
+    /// Muya 内容主题
+    var muyaContentTheme: String {
+        get { muyaContentThemeRaw }
+        set {
+            muyaContentThemeRaw = newValue
+            objectWillChange.send()
+            NotificationCenter.default.post(name: .muyaContentThemeChanged, object: nil, userInfo: ["theme": newValue])
+        }
+    }
+    
+    /// 设置 Muya 工具栏可见性
+    func setMuyaToolbarVisible(_ visible: Bool) {
+        muyaToolbarVisible = visible
+        objectWillChange.send()
+        NotificationCenter.default.post(name: .muyaToolbarVisibilityChanged, object: nil, userInfo: ["visible": visible])
+    }
+    
+    /// 设置 Muya 状态栏可见性
+    func setMuyaStatusBarVisible(_ visible: Bool) {
+        muyaStatusBarVisible = visible
+        objectWillChange.send()
+        NotificationCenter.default.post(name: .muyaStatusBarVisibilityChanged, object: nil, userInfo: ["visible": visible])
+    }
+    
+    /// 图片存储模式
+    /// Requirements: 2.1.7
+    var imageStorageMode: ImageStorageMode {
+        get { ImageStorageMode(rawValue: imageStorageModeRaw) ?? .localDirectory }
+        set {
+            imageStorageModeRaw = newValue.rawValue
+            objectWillChange.send()
+            // Update ImageHandler config
+            updateImageHandlerConfig()
+        }
+    }
+    
+    /// 默认导出格式
+    /// Requirements: 1.1
+    var defaultExportFormat: ExportFormat {
+        get { ExportFormat(rawValue: defaultExportFormatRaw) ?? .markdown }
+        set {
+            defaultExportFormatRaw = newValue.rawValue
+            objectWillChange.send()
+        }
+    }
+    
+    /// 更新 ImageHandler 配置
+    /// Requirements: 2.4
+    func updateImageHandlerConfig() {
+        let config = ImageStorageConfig(
+            storageDirectory: imageStorageDirectory,
+            useRelativePath: true,
+            generateUniqueFilename: true,
+            defaultStorageMode: imageStorageMode
+        )
+        ImageHandler.shared.updateConfig(config)
+    }
+    
+    /// 设置图片存储目录
+    /// Requirements: 2.4
+    func setImageStorageDirectory(_ directory: String) {
+        imageStorageDirectory = directory
+        objectWillChange.send()
+        updateImageHandlerConfig()
+    }
+    #endif
     
     /// 获取新任务的默认截止时间
     func getDefaultDueDate() -> Date? {
@@ -786,4 +934,17 @@ extension Notification.Name {
     static let menuBarDisplayModeChanged = Notification.Name("menuBarDisplayModeChanged")
     static let showTaskDetail = Notification.Name("showTaskDetail")
     static let selectTask = Notification.Name("selectTask")
+    static let editorThemeChanged = Notification.Name("editorThemeChanged")
+    static let toggleMuyaOutline = Notification.Name("toggleMuyaOutline")
+    
+    // Muya 编辑器通知
+    static let muyaThemeChanged = Notification.Name("muyaThemeChanged")
+    static let muyaContentThemeChanged = Notification.Name("muyaContentThemeChanged")
+    static let muyaModeChanged = Notification.Name("muyaModeChanged")
+    static let muyaToolbarVisibilityChanged = Notification.Name("muyaToolbarVisibilityChanged")
+    static let muyaStatusBarVisibilityChanged = Notification.Name("muyaStatusBarVisibilityChanged")
+    static let muyaOutlineVisibilityChanged = Notification.Name("muyaOutlineVisibilityChanged")
+    static let editorTypeChanged = Notification.Name("editorTypeChanged")
+    static let muyaHistoryStateChanged = Notification.Name("muyaHistoryStateChanged")
+    static let muyaSaveRequested = Notification.Name("muyaSaveRequested")
 }

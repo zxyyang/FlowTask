@@ -1,0 +1,119 @@
+@charset "UTF-8";
+/* Darcula Code Block Syntax Highlighting */
+
+/** code highlight - IntelliJ IDEA Darcula Style */
+
+.cm-s-inner .cm-variable,
+.cm-s-inner .cm-operator,
+.cm-s-inner .cm-property {
+    color: #A9B7C6;
+}
+
+.cm-s-inner .cm-keyword {
+    color: #CC7832;
+}
+
+.cm-s-inner .cm-tag {
+    color: #E8BF6A;
+}
+
+.cm-s-inner .cm-attribute {
+    color: #BABABA;
+}
+
+.CodeMirror div.CodeMirror-cursor {
+    border-left: 2px solid #A9B7C6;
+    z-index: 3;
+}
+
+.cm-s-inner .cm-string {
+    color: #6A8759;
+}
+
+.cm-s-inner .cm-comment,
+.cm-s-inner.cm-comment {
+    color: #808080;
+    font-style: italic;
+}
+
+.cm-s-inner .cm-header,
+.cm-s-inner .cm-def,
+.cm-s-inner.cm-header,
+.cm-s-inner.cm-def {
+    color: #FFC66D;
+}
+
+.cm-s-inner .cm-quote,
+.cm-s-inner.cm-quote {
+    color: #629755;
+}
+
+.cm-s-inner .cm-hr {
+    color: #808080;
+}
+
+.cm-s-inner .cm-link {
+    color: #287BDE;
+}
+
+.cm-s-inner .cm-negative {
+    color: #BC3F3C;
+}
+
+.cm-s-inner .cm-positive {
+    color: #629755;
+}
+
+.cm-s-inner .cm-string-2 {
+    color: #6A8759;
+}
+
+.cm-s-inner .cm-meta,
+.cm-s-inner .cm-qualifier {
+    color: #BBB529;
+}
+
+.cm-s-inner .cm-builtin {
+    color: #A9B7C6;
+}
+
+.cm-s-inner .cm-bracket {
+    color: #A9B7C6;
+}
+
+.cm-s-inner .cm-atom,
+.cm-s-inner.cm-atom {
+    color: #CC7832;
+}
+
+.cm-s-inner .cm-number {
+    color: #6897BB;
+}
+
+.cm-s-inner .cm-variable {
+    color: #A9B7C6;
+}
+
+.cm-s-inner .cm-variable-2 {
+    color: #9876AA;
+}
+
+.cm-s-inner .cm-variable-3 {
+    color: #A9B7C6;
+}
+
+.CodeMirror-selectedtext,
+.CodeMirror-selected {
+    background: #214283;
+    color: #A9B7C6 !important;
+    text-shadow: none;
+}
+
+.CodeMirror-gutters {
+    border-right: 1px solid #4E5254;
+    background: #313335;
+}
+
+.CodeMirror-linenumber {
+    color: #606366;
+}

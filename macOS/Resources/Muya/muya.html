@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="color-scheme" content="light dark">
+    <title>Muya 编辑器</title>
+    <!-- Node.js 环境变量 polyfill - 解决 Muya 内部引用 process 变量的问题 -->
+    <script>
+        window.process = window.process || {
+            env: { NODE_ENV: 'production' },
+            browser: true,
+            version: '',
+            versions: {},
+            platform: 'browser',
+            nextTick: function(fn) { setTimeout(fn, 0); }
+        };
+        window.global = window.global || window;
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color, #ffffff);
+            color: var(--text-color, #333333);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.dark-theme {
+            --bg-color: #1e1e1e;
+            --text-color: #d4d4d4;
+            --code-bg: #2d2d2d;
+        }
+        
+        body.dark-theme,
+        body.dark-theme #editor,
+        body.dark-theme .mu-editor,
+        body.dark-theme .mu-container,
+        body.dark-theme .mu-container * {
+            color: #d4d4d4;
+        }
+        
+        body.dark-theme h1,
+        body.dark-theme h2,
+        body.dark-theme h3,
+        body.dark-theme h4,
+        body.dark-theme h5,
+        body.dark-theme h6 {
+            color: #DEDEDE;
+        }
+        
+        body.dark-theme a {
+            color: #6dc1e7;
+        }
+        
+        body.dark-theme blockquote {
+            color: #9DA2A6;
+            border-left-color: #474d54;
+        }
+        
+        body.dark-theme code,
+        body.dark-theme pre {
+            background-color: #2d2d2d;
+            color: #d4d4d4;
+        }
+        
+        #editor {
+            width: 100%;
+            height: 100%;
+            padding: 16px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        /* 编辑器内容样式 - 覆盖 Muya 默认样式 */
+        #editor .mu-container {
+            max-width: 100% !important;
+            width: 100% !important;
+            min-height: 100%;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        /* Muya 编辑器核心样式 */
+        .mu-editor {
+            outline: none;
+            min-height: 100%;
+            width: 100%;
+        }
+        
+        .mu-editor img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* 表格样式 */
+        .mu-editor table,
+        .mu-container table,
+        figure[data-role="table"] table {
+            border-collapse: collapse;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 1em 0;
+            table-layout: fixed;
+            display: table !important;
+        }
+        
+        figure[data-role="table"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+        
+        .mu-editor table th,
+        .mu-editor table td,
+        .mu-container table th,
+        .mu-container table td,
+        figure[data-role="table"] th,
+        figure[data-role="table"] td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .mu-editor table th,
+        .mu-container table th,
+        figure[data-role="table"] th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        body.dark-theme .mu-editor table th,
+        body.dark-theme .mu-editor table td,
+        body.dark-theme .mu-container table th,
+        body.dark-theme .mu-container table td,
+        body.dark-theme figure[data-role="table"] th,
+        body.dark-theme figure[data-role="table"] td {
+            border-color: #444;
+        }
+        
+        body.dark-theme .mu-editor table th,
+        body.dark-theme .mu-container table th,
+        body.dark-theme figure[data-role="table"] th {
+            background-color: #2d2d2d;
+        }
+        
+        .mu-editor p {
+            margin: 0.5em 0;
+            line-height: 1.6;
+        }
+        
+        .mu-editor h1, .mu-editor h2, .mu-editor h3, 
+        .mu-editor h4, .mu-editor h5, .mu-editor h6 {
+            margin: 1em 0 0.5em 0;
+            font-weight: 600;
+        }
+        
+        .mu-editor h1 { font-size: 2em; }
+        .mu-editor h2 { font-size: 1.5em; }
+        .mu-editor h3 { font-size: 1.25em; }
+        .mu-editor h4 { font-size: 1em; }
+        .mu-editor h5 { font-size: 0.875em; }
+        .mu-editor h6 { font-size: 0.85em; }
+        
+        .mu-editor ul, .mu-editor ol {
+            padding-left: 2em;
+            margin: 0.5em 0;
+        }
+        
+        .mu-editor blockquote {
+            border-left: 4px solid #ddd;
+            padding-left: 1em;
+            margin: 0.5em 0;
+            color: #666;
+        }
+        
+        body.dark-theme .mu-editor blockquote {
+            border-left-color: #555;
+            color: #aaa;
+        }
+        
+        /* 代码块样式优化 */
+        #editor pre, .mu-editor pre {
+            background-color: var(--code-bg, #f5f5f5);
+            border-radius: 6px;
+            padding: 12px;
+            overflow-x: auto;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.9em;
+        }
+        
+        .mu-editor code {
+            background-color: var(--code-bg, #f5f5f5);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.9em;
+        }
+        
+        body.dark-theme #editor pre,
+        body.dark-theme .mu-editor pre,
+        body.dark-theme .mu-editor code {
+            --code-bg: #2d2d2d;
+        }
+        
+        /* 隐藏 WebView 默认滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        body.dark-theme ::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 选中文本样式 */
+        ::selection {
+            background-color: rgba(0, 122, 255, 0.3);
+        }
+        
+        /* 禁用状态 */
+        #editor.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        
+        /* 加载状态 - 不受主题影响 */
+        #loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #333 !important;
+            background-color: #ffffff !important;
+        }
+        
+        #loading.hidden {
+            display: none;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 122, 255, 0.2);
+            border-top-color: rgba(0, 122, 255, 0.8);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        #error {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #e74c3c !important;
+            text-align: center;
+            padding: 20px;
+            background-color: #ffffff !important;
+        }
+        
+        #error.visible {
+            display: flex;
+        }
+        
+        #error-message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666 !important;
+        }
+        
+        /* 深色模式下的加载和错误状态 - 使用系统深色背景 */
+        @media (prefers-color-scheme: dark) {
+            #loading {
+                color: #d4d4d4 !important;
+                background-color: #1e1e1e !important;
+            }
+            
+            #error {
+                background-color: #1e1e1e !important;
+            }
+            
+            #error-message {
+                color: #999 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 16px;">正在加载编辑器...</p>
+    </div>
+    <div id="error">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <p style="margin-top: 16px; font-weight: bold;">编辑器加载失败</p>
+        <p id="error-message"></p>
+    </div>
+    <div id="editor"></div>
+    
+    <!-- 先加载桥接脚本 -->
+    <script src="muyaBridge.js"></script>
+    
+    <!-- 图片加载拦截器 - 解决 WKWebView 自定义 scheme 在 Image() 中不工作的问题 -->
+    <script>
+    (function() {
+        console.log('[ImageInterceptor] 初始化图片拦截器');
+        
+        // 保存原始 Image 构造函数
+        const OriginalImage = window.Image;
+        const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+        
+        // 图片缓存：URL -> blob URL
+        const imageCache = new Map();
+        
+        // 处理 muya-local:// 或 file:// URL，转换为可用的 blob URL
+        async function loadLocalImage(url) {
+            // 检查缓存
+            if (imageCache.has(url)) {
+                console.log('[ImageInterceptor] 使用缓存:', url.substring(0, 60));
+                return imageCache.get(url);
+            }
+            
+            let fetchUrl = url;
+            
+            // 将 file:// URL 转换为 muya-local:// URL
+            if (url.startsWith('file://')) {
+                const path = url.replace('file://', '');
+                fetchUrl = 'muya-local://local/absolute' + path;
+                console.log('[ImageInterceptor] file:// -> muya-local://:', fetchUrl.substring(0, 80));
+            }
+            
+            console.log('[ImageInterceptor] 加载图片:', fetchUrl.substring(0, 80));
+            try {
+                const response = await fetch(fetchUrl);
+                if (!response.ok) {
+                    throw new Error('Failed to load image: ' + response.status);
+                }
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                console.log('[ImageInterceptor] 转换为 blob URL, size:', blob.size);
+                
+                // 缓存结果
+                imageCache.set(url, blobUrl);
+                
+                return blobUrl;
+            } catch (err) {
+                console.error('[ImageInterceptor] 加载失败:', fetchUrl, err);
+                throw err;
+            }
+        }
+        
+        // 检查是否需要拦截的 URL
+        function needsInterception(url) {
+            if (!url) return false;
+            return url.startsWith('muya-local://') || 
+                   url.startsWith('file://') ||
+                   (url.startsWith('/') && !url.startsWith('//'));
+        }
+        
+        // 重写 Image 构造函数
+        window.Image = function(width, height) {
+            const img = new OriginalImage(width, height);
+            
+            // 重写 src 属性
+            let _src = '';
+            let _originalSrc = '';
+            
+            Object.defineProperty(img, 'src', {
+                get: function() {
+                    return _src;
+                },
+                set: function(value) {
+                    _originalSrc = value;
+                    console.log('[ImageInterceptor] Image.src 设置:', value ? value.substring(0, 80) : 'empty');
+                    
+                    if (needsInterception(value)) {
+                        _src = value;
+                        // 异步加载图片
+                        loadLocalImage(value).then(blobUrl => {
+                            _src = blobUrl;
+                            originalSrcDescriptor.set.call(img, blobUrl);
+                        }).catch(err => {
+                            console.error('[ImageInterceptor] Image 加载失败:', err);
+                            if (img.onerror) {
+                                img.onerror(new Error('Image load failed: ' + value));
+                            }
+                        });
+                    } else {
+                        _src = value;
+                        originalSrcDescriptor.set.call(img, value);
+                    }
+                },
+                configurable: true,
+                enumerable: true
+            });
+            
+            return img;
+        };
+        
+        // 保持原型链
+        window.Image.prototype = OriginalImage.prototype;
+        Object.setPrototypeOf(window.Image, OriginalImage);
+        
+        // 处理 DOM 中的图片元素
+        function fixImageSrc(img) {
+            const src = img.getAttribute('src') || '';
+            
+            if (needsInterception(src) && !img._muyaProcessing) {
+                console.log('[ImageInterceptor] fixImageSrc:', src.substring(0, 60));
+                img._muyaProcessing = true;
+                loadLocalImage(src).then(blobUrl => {
+                    img.src = blobUrl;
+                    img._muyaProcessing = false;
+                }).catch(err => {
+                    console.error('[ImageInterceptor] DOM 图片加载失败:', err);
+                    img._muyaProcessing = false;
+                });
+            }
+        }
+        
+        // 扫描所有现有图片
+        function scanAllImages() {
+            const images = document.querySelectorAll('img');
+            console.log('[ImageInterceptor] 扫描图片, 找到:', images.length);
+            images.forEach(img => {
+                const src = img.getAttribute('src') || '';
+                if (src) {
+                    console.log('[ImageInterceptor] 图片 src:', src.substring(0, 60));
+                }
+                fixImageSrc(img);
+            });
+        }
+        
+        // MutationObserver 处理动态添加的图片
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        const images = node.tagName === 'IMG' ? [node] : node.querySelectorAll('img');
+                        if (images.length > 0) {
+                            console.log('[ImageInterceptor] MutationObserver 发现', images.length, '个新图片');
+                            images.forEach(fixImageSrc);
+                        }
+                    }
+                });
+                if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                    if (mutation.target.tagName === 'IMG') {
+                        console.log('[ImageInterceptor] 图片 src 属性变化');
+                        fixImageSrc(mutation.target);
+                    }
+                }
+            });
+        });
+        
+        // 立即启动观察器
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['src']
+        });
+        console.log('[ImageInterceptor] MutationObserver 已启动');
+        
+        // 暴露函数供外部调用
+        window.muyaImageInterceptor = {
+            scanAllImages: scanAllImages,
+            fixImageSrc: fixImageSrc,
+            loadLocalImage: loadLocalImage,
+            imageCache: imageCache
+        };
+    })();
+    </script>
+    
+    <script type="module">
+        // 显示错误信息
+        function showError(message) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.add('visible');
+            document.getElementById('error-message').textContent = message;
+            
+            // 通知 Swift 层
+            if (window.webkit?.messageHandlers?.muyaHandler) {
+                window.webkit.messageHandlers.muyaHandler.postMessage({
+                    type: 'error',
+                    data: { message: 'Muya 初始化失败: ' + message },
+                    timestamp: Date.now()
+                });
+            }
+        }
+        
+        // 隐藏加载状态
+        function hideLoading() {
+            document.getElementById('loading').classList.add('hidden');
+        }
+        
+        try {
+            // 动态导入 Muya 和语言包
+            const [{ default: Muya }, { default: zh }, { default: en }] = await Promise.all([
+                import('./muya.js'),
+                import('./zh.js'),
+                import('./locales/en.js')
+            ]);
+            
+            // 合并语言包，确保英文作为回退
+            const mergedLocale = {
+                name: zh.name,
+                resource: { ...en.resource, ...zh.resource }
+            };
+            
+            // 初始化编辑器
+            const container = document.querySelector('#editor');
+            
+            const muya = new Muya(container, {
+                locale: mergedLocale,
+                autoPairBracket: true,
+                autoPairMarkdownSyntax: true,
+                autoPairQuote: true,
+                trimUnnecessaryCodeBlockEmptyLines: true,
+                bulletListMarker: '-',
+                orderListDelimiter: '.',
+                tabSize: 4,
+                codeBlockLineNumbers: true,
+                listIndentation: 1,
+                frontmatterType: '-',
+                sequenceTheme: 'hand',
+                mermaidTheme: 'default',
+                vegaTheme: 'latimes',
+                hideQuickInsertHint: false,
+                hideLinkPopup: false,
+                autoCheck: false,
+                spellcheckEnabled: false,
+                superSubScript: true,
+                footnote: true,
+                isGitlabCompatibilityEnabled: false,
+                math: true
+            });
+            
+            // 手动添加英文语言包作为回退
+            muya.i18n.resources.en = en.resource;
+            
+            // 必须调用 init() 来初始化编辑器
+            muya.init();
+            
+            // 隐藏加载状态
+            hideLoading();
+            
+            // 初始化桥接
+            window.muyaBridge.init(muya);
+            
+        } catch (e) {
+            console.error('Muya 初始化失败:', e);
+            showError(e.message || '未知错误');
+        }
+    </script>
+</body>
+</html>

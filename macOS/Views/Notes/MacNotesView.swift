@@ -13,6 +13,24 @@ class NotesViewModel: ObservableObject {
     @Published var content: String = ""
     @Published var searchText: String = ""
     
+    /// Whether the current content has unsaved changes
+    @Published var isDirty: Bool = false
+    
+    /// Cancellable for content change observation
+    private var contentChangeCancellable: AnyCancellable?
+    
+    /// The last saved content (to detect changes)
+    private var lastSavedContent: String = ""
+    
+    /// 当前正在编辑的文件 URL（用于验证回调）
+    private var currentEditingFileURL: URL?
+    
+    /// 当前编辑会话 ID（用于验证异步回调）
+    private var currentEditingSessionId: UUID = UUID()
+    
+    /// 是否正在切换文件（阻止保存）
+    private var isSwitchingFile: Bool = false
+    
     var filteredFiles: [MarkdownFile] {
         if searchText.isEmpty {
             return markdownFiles
@@ -21,6 +39,8 @@ class NotesViewModel: ObservableObject {
     }
     
     init() {
+        setupContentObserver()
+        
         // 尝试从 UserDefaults 恢复上次的目录（使用安全书签）
         if let bookmarkData = UserDefaults.standard.data(forKey: "NotesDirectoryBookmark") {
             do {
@@ -32,16 +52,110 @@ class NotesViewModel: ObservableObject {
                     if url.startAccessingSecurityScopedResource() {
                         saveDirectoryBookmark(url)
                         self.notesDirectory = url
+                        ImageHandler.shared.setDocumentDirectory(url)
                         loadFiles()
                     }
                 } else {
                     if url.startAccessingSecurityScopedResource() {
                         self.notesDirectory = url
+                        ImageHandler.shared.setDocumentDirectory(url)
                         loadFiles()
                     }
                 }
             } catch {
                 print("恢复目录书签失败: \(error)")
+            }
+        }
+    }
+    
+    // MARK: - Content Change Handling
+    
+    /// Sets up the content observer for auto-save
+    private func setupContentObserver() {
+        contentChangeCancellable = $content
+            .dropFirst() // Skip initial value
+            .removeDuplicates()
+            .sink { [weak self] newContent in
+                self?.handleContentChange(newContent)
+            }
+    }
+    
+    /// Called when content changes from MuyaWebView callback
+    /// - Parameters:
+    ///   - newContent: The new markdown content
+    ///   - sessionId: Optional session ID for validation (if provided by JS)
+    func onEditorContentChange(_ newContent: String, sessionId: UUID? = nil) {
+        // 如果正在切换文件，忽略所有回调
+        guard !isSwitchingFile else {
+            MuyaLogger.debug("onEditorContentChange: 正在切换文件，跳过", category: "notes")
+            return
+        }
+        
+        // 验证当前文件 URL 匹配
+        guard let currentFile = selectedFile,
+              currentFile.url == currentEditingFileURL else {
+            MuyaLogger.debug("onEditorContentChange: 文件不匹配或无选中文件，跳过", category: "notes")
+            return
+        }
+        
+        // 如果提供了 sessionId，验证是否匹配当前会话
+        if let sessionId = sessionId, sessionId != currentEditingSessionId {
+            MuyaLogger.debug("onEditorContentChange: 会话 ID 不匹配，跳过 (期望: \(currentEditingSessionId), 收到: \(sessionId))", category: "notes")
+            return
+        }
+        
+        // 检查是否有实际变化
+        guard newContent != lastSavedContent else {
+            return
+        }
+        
+        // 更新内容
+        content = newContent
+        isDirty = true
+        
+        MuyaLogger.debug("onEditorContentChange: 保存到 \(currentFile.name)", category: "notes")
+        
+        // 立即保存到当前文件
+        saveToFile(currentFile)
+    }
+    
+    /// Handles content changes from the editor
+    /// - Parameter newContent: The new content from the editor
+    func handleContentChange(_ newContent: String) {
+        // 如果正在切换文件，忽略
+        guard !isSwitchingFile else { return }
+        
+        // Update dirty state
+        isDirty = newContent != lastSavedContent
+        
+        // 立即保存
+        if isDirty, let currentFile = selectedFile, currentFile.url == currentEditingFileURL {
+            saveToFile(currentFile)
+        }
+    }
+    
+    /// 保存内容到指定文件
+    private func saveToFile(_ file: MarkdownFile) {
+        // Ensure we have security-scoped access to the directory
+        let hasAccess = notesDirectory?.startAccessingSecurityScopedResource() ?? false
+        defer {
+            if hasAccess {
+                notesDirectory?.stopAccessingSecurityScopedResource()
+            }
+        }
+        
+        do {
+            try content.write(to: file.url, atomically: true, encoding: .utf8)
+            lastSavedContent = content
+            isDirty = false
+            MuyaLogger.info("文件已保存: \(file.name), 内容长度: \(content.count)", category: "notes")
+        } catch {
+            MuyaLogger.error("保存文件失败: \(error.localizedDescription)", category: "notes")
+            if (error as NSError).code == NSFileWriteNoPermissionError || 
+               (error as NSError).domain == NSCocoaErrorDomain && (error as NSError).code == 513 {
+                DispatchQueue.main.async { [weak self] in
+                    self?.handleSavePermissionError()
+                }
             }
         }
     }
@@ -70,6 +184,7 @@ class NotesViewModel: ObservableObject {
             // 开始新的安全访问
             _ = url.startAccessingSecurityScopedResource()
             notesDirectory = url
+            ImageHandler.shared.setDocumentDirectory(url)
             saveDirectoryBookmark(url)
             loadFiles()
         }
@@ -119,15 +234,44 @@ class NotesViewModel: ObservableObject {
     }
     
     func selectFile(_ file: MarkdownFile) {
-        // 保存当前文件
-        saveCurrentFile()
+        // 如果选择的是同一个文件，直接返回
+        guard selectedFile?.url != file.url else { return }
         
-        selectedFile = file
+        // 标记正在切换文件，阻止所有保存操作
+        isSwitchingFile = true
+        
+        // 保存当前文件（如果有修改）
+        if isDirty, let oldFile = selectedFile, oldFile.url == currentEditingFileURL {
+            MuyaLogger.info("切换文件前保存: \(oldFile.name)", category: "notes")
+            saveToFile(oldFile)
+        }
+        
+        // 生成新的会话 ID
+        currentEditingSessionId = UUID()
+        
+        // 更新当前编辑文件 URL（在加载内容之前）
+        currentEditingFileURL = file.url
+        
+        // 先加载新文件内容
+        var newContent = ""
         do {
-            content = try String(contentsOf: file.url, encoding: .utf8)
+            newContent = try String(contentsOf: file.url, encoding: .utf8)
+            MuyaLogger.info("已加载文件: \(file.name), 长度: \(newContent.count), 会话: \(currentEditingSessionId)", category: "notes")
         } catch {
-            content = ""
-            print("读取文件失败: \(error)")
+            MuyaLogger.error("读取文件失败: \(error)", category: "notes")
+        }
+        
+        // 同步更新所有状态（确保 SwiftUI 在同一个更新周期内处理）
+        lastSavedContent = newContent
+        isDirty = false
+        content = newContent
+        selectedFile = file
+        ImageHandler.shared.setDocumentDirectory(file.url.deletingLastPathComponent())
+        
+        // 延迟解除切换锁定，确保 WebView 内容已更新
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.isSwitchingFile = false
+            MuyaLogger.debug("文件切换完成，解除锁定", category: "notes")
         }
     }
     
@@ -154,11 +298,53 @@ class NotesViewModel: ObservableObject {
     }
     
     func saveCurrentFile() {
-        guard let file = selectedFile else { return }
+        guard let file = selectedFile else {
+            MuyaLogger.warning("saveCurrentFile: 没有选中的文件", category: "notes")
+            return
+        }
+        
+        // Ensure we have security-scoped access to the directory
+        let hasAccess = notesDirectory?.startAccessingSecurityScopedResource() ?? false
+        defer {
+            if hasAccess {
+                notesDirectory?.stopAccessingSecurityScopedResource()
+            }
+        }
+        
         do {
             try content.write(to: file.url, atomically: true, encoding: .utf8)
+            lastSavedContent = content
+            isDirty = false
+            MuyaLogger.info("文件已保存: \(file.name), 内容长度: \(content.count)", category: "notes")
         } catch {
-            print("保存文件失败: \(error)")
+            MuyaLogger.error("保存文件失败: \(error.localizedDescription)", category: "notes")
+            // If save fails due to permissions, prompt user to re-select directory
+            if (error as NSError).code == NSFileWriteNoPermissionError || 
+               (error as NSError).domain == NSCocoaErrorDomain && (error as NSError).code == 513 {
+                DispatchQueue.main.async { [weak self] in
+                    self?.handleSavePermissionError()
+                }
+            }
+        }
+    }
+    
+    /// Handles save permission errors by prompting user to re-select directory
+    private func handleSavePermissionError() {
+        // Clear the stale bookmark
+        UserDefaults.standard.removeObject(forKey: "NotesDirectoryBookmark")
+        notesDirectory?.stopAccessingSecurityScopedResource()
+        notesDirectory = nil
+        
+        // Prompt user to re-select directory
+        let alert = NSAlert()
+        alert.messageText = "无法保存文件"
+        alert.informativeText = "应用没有权限访问当前目录。请重新选择笔记存储目录。"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "选择目录")
+        alert.addButton(withTitle: "取消")
+        
+        if alert.runModal() == .alertFirstButtonReturn {
+            selectDirectory()
         }
     }
     
@@ -181,6 +367,8 @@ class NotesViewModel: ObservableObject {
             if selectedFile?.id == file.id {
                 selectedFile = nil
                 content = ""
+                lastSavedContent = ""
+                isDirty = false
             }
             loadFiles()
         } catch {
@@ -212,21 +400,31 @@ struct MarkdownFile: Identifiable, Hashable {
 struct MacNotesView: View {
     @StateObject private var viewModel = NotesViewModel()
     @State private var animateList = false
+    @State private var sidebarCollapsed = false
     
     var body: some View {
         HSplitView {
             // 左侧文件列表
-            fileListPanel
+            if !sidebarCollapsed {
+                fileListPanel
+            }
             
             // 右侧编辑器/预览
             editorPanel
         }
         .frame(minWidth: 800, minHeight: 500)
         .onAppear {
+            // 初始化工具栏状态
+            showToolbar = SettingsManager.shared.muyaToolbarVisible
+            
             // 启动加载动画
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) {
                 animateList = true
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .muyaSaveRequested)) { _ in
+            // 响应编辑器的保存请求
+            viewModel.saveCurrentFile()
         }
     }
     
@@ -330,15 +528,86 @@ struct MacNotesView: View {
 
     
     // MARK: - Editor Panel
+    @State private var isEditingFileName = false
+    @State private var editingFileName = ""
+    @State private var showOutline = false  // 默认隐藏大纲
+    @State private var showToolbar = true   // 工具栏状态
+    
     private var editorPanel: some View {
         VStack(spacing: 0) {
             if let file = viewModel.selectedFile {
-                // 标题栏
+                // 标题栏 - 支持双击修改文件名
                 HStack {
-                    Text(file.name)
-                        .font(.headline)
+                    // 侧边栏切换按钮
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            sidebarCollapsed.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "sidebar.leading")
+                    }
+                    .buttonStyle(.plain)
+                    .help(sidebarCollapsed ? "显示笔记列表" : "隐藏笔记列表")
+                    
+                    if isEditingFileName {
+                        TextField("文件名", text: $editingFileName)
+                            .textFieldStyle(.plain)
+                            .font(.headline)
+                            .onSubmit {
+                                if !editingFileName.isEmpty && editingFileName != file.name {
+                                    viewModel.renameFile(file, newName: editingFileName)
+                                }
+                                isEditingFileName = false
+                            }
+                            .onExitCommand {
+                                isEditingFileName = false
+                            }
+                    } else {
+                        Text(file.name)
+                            .font(.headline)
+                            .onTapGesture(count: 2) {
+                                editingFileName = file.name
+                                isEditingFileName = true
+                            }
+                            .help("双击修改文件名")
+                    }
+                    
+                    // Dirty indicator
+                    if viewModel.isDirty {
+                        Circle()
+                            .fill(Color.orange)
+                            .frame(width: 8, height: 8)
+                            .help("有未保存的更改")
+                    }
                     
                     Spacer()
+                    
+                    // 大纲开关按钮
+                    Button {
+                        showOutline.toggle()
+                        // 通过通知告诉编辑器切换大纲
+                        NotificationCenter.default.post(
+                            name: .toggleMuyaOutline,
+                            object: nil,
+                            userInfo: ["show": showOutline]
+                        )
+                    } label: {
+                        Image(systemName: showOutline ? "list.bullet.indent" : "list.bullet")
+                            .foregroundColor(showOutline ? .accentColor : .primary)
+                    }
+                    .buttonStyle(.plain)
+                    .help(showOutline ? "隐藏大纲" : "显示大纲")
+                    
+                    // 工具栏开关按钮
+                    Button {
+                        showToolbar.toggle()
+                        SettingsManager.shared.setMuyaToolbarVisible(showToolbar)
+                    } label: {
+                        Image(systemName: showToolbar ? "menubar.rectangle" : "menubar.dock.rectangle")
+                            .foregroundColor(showToolbar ? .accentColor : .primary)
+                    }
+                    .buttonStyle(.plain)
+                    .help(showToolbar ? "隐藏工具栏" : "显示工具栏")
                     
                     Button {
                         viewModel.saveCurrentFile()
@@ -348,6 +617,16 @@ struct MacNotesView: View {
                     .buttonStyle(.plain)
                     .help("保存 (⌘S)")
                     .keyboardShortcut("s", modifiers: .command)
+                    
+                    // 导出按钮
+                    Button {
+                        exportCurrentFile()
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .buttonStyle(.plain)
+                    .help("导出 (⌘E)")
+                    .keyboardShortcut("e", modifiers: .command)
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
@@ -355,8 +634,18 @@ struct MacNotesView: View {
                 
                 Divider()
                 
-                // 实时 Markdown 编辑器（Typora 风格）
-                MarkdownEditorView(content: $viewModel.content)
+                // 实时 Markdown 编辑器（WYSIWYG 风格）
+                MarkdownEditorView(
+                    content: $viewModel.content,
+                    onContentChange: { newContent in
+                        viewModel.onEditorContentChange(newContent)
+                    },
+                    onError: { error in
+                        print("编辑器错误: \(error)")
+                    }
+                )
+                // 不使用 .id() 强制重建，而是依赖 content binding 的变化来更新编辑器
+                // 这样可以避免 WebView 重新加载导致的延迟和竞态条件
             } else {
                 emptyEditorView
             }
@@ -365,23 +654,90 @@ struct MacNotesView: View {
     }
     
     private var emptyEditorView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "doc.text")
-                .font(.system(size: 64))
-                .foregroundColor(.secondary.opacity(0.5))
-            
-            Text("选择或创建一个笔记")
-                .font(.title2)
-                .foregroundColor(.secondary)
-            
-            if viewModel.notesDirectory != nil {
-                Button("新建笔记") {
-                    viewModel.createNewFile()
+        VStack(spacing: 0) {
+            // 顶部工具栏（包含侧边栏切换按钮）
+            HStack {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        sidebarCollapsed.toggle()
+                    }
+                } label: {
+                    Image(systemName: "sidebar.leading")
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.plain)
+                .help(sidebarCollapsed ? "显示笔记列表" : "隐藏笔记列表")
+                
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Color(.windowBackgroundColor))
+            
+            Divider()
+            
+            // 空状态内容
+            VStack(spacing: 16) {
+                Image(systemName: "doc.text")
+                    .font(.system(size: 64))
+                    .foregroundColor(.secondary.opacity(0.5))
+                
+                Text("选择或创建一个笔记")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                
+                if viewModel.notesDirectory != nil {
+                    Button("新建笔记") {
+                        viewModel.createNewFile()
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+    
+    // MARK: - Export Methods
+    
+    /// Exports the current file using ExportManager
+    /// Requirements: 1.1, 1.5
+    private func exportCurrentFile() {
+        guard let file = viewModel.selectedFile else { return }
+        
+        let content = viewModel.content
+        let fileName = file.name
+        
+        ExportManager.shared.showExportDialog(
+            content: content,
+            fileName: fileName,
+            htmlContent: nil
+        ) { result in
+            switch result {
+            case .success(let url):
+                // Show success notification
+                let alert = NSAlert()
+                alert.messageText = "导出成功"
+                alert.informativeText = "文件已导出到: \(url.path)"
+                alert.alertStyle = .informational
+                alert.addButton(withTitle: "确定")
+                alert.addButton(withTitle: "在 Finder 中显示")
+                
+                if alert.runModal() == .alertSecondButtonReturn {
+                    NSWorkspace.shared.selectFile(url.path, inFileViewerRootedAtPath: url.deletingLastPathComponent().path)
+                }
+            case .failure(let error):
+                if case .userCancelled = error {
+                    // User cancelled, no need to show error
+                    return
+                }
+                // Show error alert
+                let alert = NSAlert()
+                alert.messageText = "导出失败"
+                alert.informativeText = error.localizedDescription
+                alert.alertStyle = .warning
+                alert.addButton(withTitle: "确定")
+                alert.runModal()
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

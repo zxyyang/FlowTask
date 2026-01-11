@@ -1,165 +1,146 @@
 import SwiftUI
 import AppKit
+import WebKit
 
 #if os(macOS)
 
-// MARK: - Markdown 编辑器（编辑/预览分离模式）
+// MARK: - Markdown 编辑器（WYSIWYG 模式）
+// Requirements: 18.1, 18.2 - 内容持久化集成
 
 struct MarkdownEditorView: View {
     @Binding var content: String
-    @State private var isPreviewMode = false
+    
+    /// Callback when content changes (for auto-save)
+    var onContentChange: ((String) -> Void)?
+    
+    /// Callback when an error occurs
+    var onError: ((String) -> Void)?
+    
+    /// Whether the editor is ready
+    @State private var isEditorReady = false
+    
+    /// Current error message to display
+    @State private var errorMessage: String?
+    
+    /// Environment color scheme for theme synchronization
+    @Environment(\.colorScheme) private var colorScheme
+    
+    /// Settings manager for editor type selection
+    @ObservedObject private var settings = SettingsManager.shared
     
     var body: some View {
-        VStack(spacing: 0) {
-            // 工具栏
-            editorToolbar
-            
-            Divider()
-            
-            // 编辑器或预览
-            if isPreviewMode {
-                MarkdownPreviewView(content: content)
-            } else {
-                MarkdownTextEditor(content: $content)
-            }
-        }
-    }
-    
-    private var editorToolbar: some View {
-        HStack {
-            Spacer()
-            
-            // 编辑/预览切换
-            Picker("", selection: $isPreviewMode) {
-                Image(systemName: "pencil")
-                    .tag(false)
-                Image(systemName: "eye")
-                    .tag(true)
-            }
-            .pickerStyle(.segmented)
-            .frame(width: 80)
-            .help(isPreviewMode ? "预览模式" : "编辑模式")
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(Color(.windowBackgroundColor))
+        // 直接使用 Muya 编辑器
+        MuyaEditorView(
+            content: $content,
+            onContentChange: { newContent in
+                onContentChange?(newContent)
+            },
+            onError: { error in
+                errorMessage = error
+                onError?(error)
+            },
+            onReady: {
+                isEditorReady = true
+                errorMessage = nil
+            },
+            theme: settings.getCurrentMuyaTheme(),
+            mode: settings.muyaMode,
+            showToolbar: settings.muyaToolbarVisible,
+            showStatusBar: settings.muyaStatusBarVisible
+        )
     }
 }
 
-// MARK: - 纯文本编辑器
+// MARK: - Link Insertion Dialog
 
-struct MarkdownTextEditor: NSViewRepresentable {
-    @Binding var content: String
+/// Dialog for inserting links
+/// Requirements: 6.5, 13.3
+struct LinkInsertionDialog: View {
+    @Binding var url: String
+    @Binding var text: String
+    var onInsert: () -> Void
+    var onCancel: () -> Void
     
-    func makeNSView(context: Context) -> NSScrollView {
-        let scrollView = NSScrollView()
-        scrollView.hasVerticalScroller = true
-        scrollView.hasHorizontalScroller = false
-        scrollView.autohidesScrollers = true
-        scrollView.borderType = .noBorder
-        
-        let textView = NSTextView()
-        textView.delegate = context.coordinator
-        textView.isEditable = true
-        textView.isSelectable = true
-        textView.allowsUndo = true
-        textView.isRichText = false
-        textView.usesFontPanel = false
-        textView.font = NSFont.monospacedSystemFont(ofSize: 14, weight: .regular)
-        textView.textColor = NSColor.textColor
-        textView.backgroundColor = editorBackgroundColor
-        textView.textContainerInset = NSSize(width: 16, height: 16)
-        textView.isAutomaticQuoteSubstitutionEnabled = false
-        textView.isAutomaticDashSubstitutionEnabled = false
-        textView.isAutomaticTextReplacementEnabled = false
-        textView.isAutomaticSpellingCorrectionEnabled = false
-        
-        textView.autoresizingMask = [.width]
-        textView.isVerticallyResizable = true
-        textView.isHorizontallyResizable = false
-        textView.textContainer?.widthTracksTextView = true
-        textView.textContainer?.containerSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-        
-        scrollView.documentView = textView
-        scrollView.backgroundColor = editorBackgroundColor
-        
-        context.coordinator.textView = textView
-        textView.string = content
-        
-        return scrollView
-    }
-    
-    func updateNSView(_ scrollView: NSScrollView, context: Context) {
-        guard let textView = scrollView.documentView as? NSTextView else { return }
-        
-        if !context.coordinator.isEditing && textView.string != content {
-            let selectedRange = textView.selectedRange()
-            textView.string = content
-            let newLocation = min(selectedRange.location, textView.string.count)
-            textView.setSelectedRange(NSRange(location: newLocation, length: 0))
-        }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    private var editorBackgroundColor: NSColor {
-        let isDark = NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return isDark ? NSColor(red: 0x37/255.0, green: 0x3B/255.0, blue: 0x40/255.0, alpha: 1.0) : NSColor.textBackgroundColor
-    }
-    
-    class Coordinator: NSObject, NSTextViewDelegate {
-        var parent: MarkdownTextEditor
-        weak var textView: NSTextView?
-        var isEditing = false
-        
-        init(_ parent: MarkdownTextEditor) {
-            self.parent = parent
-        }
-        
-        func textDidChange(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView else { return }
-            isEditing = true
-            parent.content = textView.string
-            isEditing = false
-        }
-    }
-}
-
-// MARK: - Markdown 预览（使用系统 AttributedString）
-
-struct MarkdownPreviewView: View {
-    let content: String
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                if let attributedString = try? AttributedString(markdown: content, options: markdownOptions) {
-                    Text(attributedString)
-                        .textSelection(.enabled)
-                        .font(.system(size: 15))
-                } else {
-                    Text(content)
-                        .textSelection(.enabled)
-                        .font(.system(size: 15))
+        VStack(spacing: 16) {
+            Text("插入链接")
+                .font(.headline)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                Text("URL:")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                TextField("https://example.com", text: $url)
+                    .textFieldStyle(.roundedBorder)
+                
+                Text("显示文本 (可选):")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                TextField("链接文本", text: $text)
+                    .textFieldStyle(.roundedBorder)
+            }
+            
+            HStack {
+                Button("取消") {
+                    onCancel()
+                    dismiss()
                 }
+                .keyboardShortcut(.cancelAction)
+                
+                Spacer()
+                
+                Button("插入") {
+                    onInsert()
+                    dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+                .disabled(url.isEmpty)
             }
-            .padding(20)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(backgroundColor)
+        .padding()
+        .frame(width: 350)
+    }
+}
+
+// MARK: - Keyboard Shortcut Modifier
+
+/// Keyboard shortcut types for the editor
+/// Requirements: 13.1-13.7
+enum EditorShortcut {
+    case bold       // Cmd+B
+    case italic     // Cmd+I
+    case link       // Cmd+K
+    case indent     // Cmd+]
+    case outdent    // Cmd+[
+    
+    var key: KeyEquivalent {
+        switch self {
+        case .bold: return "b"
+        case .italic: return "i"
+        case .link: return "k"
+        case .indent: return "]"
+        case .outdent: return "["
+        }
     }
     
-    private var markdownOptions: AttributedString.MarkdownParsingOptions {
-        var options = AttributedString.MarkdownParsingOptions()
-        options.interpretedSyntax = .inlineOnlyPreservingWhitespace
-        return options
+    var modifiers: EventModifiers {
+        return .command
     }
-    
-    private var backgroundColor: Color {
-        let isDark = NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return isDark ? Color(nsColor: NSColor(red: 0x37/255.0, green: 0x3B/255.0, blue: 0x40/255.0, alpha: 1.0)) : Color(nsColor: .textBackgroundColor)
+}
+
+extension View {
+    /// Adds a keyboard shortcut for editor actions
+    /// Requirements: 13.1-13.7
+    func keyboardShortcut(for shortcut: EditorShortcut, action: @escaping () -> Void) -> some View {
+        self.background(
+            Button("") {
+                action()
+            }
+            .keyboardShortcut(shortcut.key, modifiers: shortcut.modifiers)
+            .opacity(0)
+        )
     }
 }
 

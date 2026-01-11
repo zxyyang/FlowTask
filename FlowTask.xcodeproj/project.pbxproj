@@ -39,8 +39,6 @@
 		07FD1A3A2EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A002EED629A00CBC0EE /* NoteRepositoryProtocol.swift */; };
 		07FD1A3B2EED629A00CBC0EE /* FocusSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F82EED629A00CBC0EE /* FocusSession.swift */; };
 		07FD1A3C2EED629A00CBC0EE /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EC2EED629A00CBC0EE /* DataContainer.swift */; };
-		07FD1A3D2EED629A00CBC0EE /* MacTaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E72EED629A00CBC0EE /* MacTaskListView.swift */; };
-		07FD1A3F2EED629A00CBC0EE /* MacCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E32EED629A00CBC0EE /* MacCategoryView.swift */; };
 		07FD1A402EED629A00CBC0EE /* SyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FB2EED629A00CBC0EE /* SyncStatus.swift */; };
 		07FD1A442EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A012EED629A00CBC0EE /* TaskRepositoryProtocol.swift */; };
 		07FD1A452EED629A00CBC0EE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A072EED629A00CBC0EE /* Date+Extensions.swift */; };
@@ -48,14 +46,11 @@
 		07FD1A472EED629A00CBC0EE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A052EED629A00CBC0EE /* Theme.swift */; };
 		07FD1A492EED629A00CBC0EE /* DailySummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F72EED629A00CBC0EE /* DailySummary.swift */; };
 		07FD1A4A2EED629A00CBC0EE /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A082EED629A00CBC0EE /* String+Extensions.swift */; };
-		07FD1A4B2EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EA2EED629A00CBC0EE /* FlowTaskMacApp.swift */; };
 		07FD1A4C2EED629A00CBC0EE /* FlowTaskError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FE2EED629A00CBC0EE /* FlowTaskError.swift */; };
 		07FD1A4E2EED629A00CBC0EE /* TaskStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19ED2EED629A00CBC0EE /* TaskStorage.swift */; };
 		07FD1A4F2EED629A00CBC0EE /* NoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EF2EED629A00CBC0EE /* NoteRepository.swift */; };
-		07FD1A502EED629A00CBC0EE /* FloatingWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E52EED629A00CBC0EE /* FloatingWindowView.swift */; };
 		07FD1A512EED629A00CBC0EE /* FocusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F32EED629A00CBC0EE /* FocusService.swift */; };
 		07FD1A532EED629A00CBC0EE /* TaskValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A0A2EED629A00CBC0EE /* TaskValidator.swift */; };
-		07FD1A552EED629A00CBC0EE /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F42EED629A00CBC0EE /* NotificationService.swift */; };
 		07FD1A562EED629A00CBC0EE /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FC2EED629A00CBC0EE /* Task.swift */; };
 		07FD1A582EED629A00CBC0EE /* DailySummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F22EED629A00CBC0EE /* DailySummaryService.swift */; };
 		07FD1A5B2EED629A00CBC0EE /* Subtask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FA2EED629A00CBC0EE /* Subtask.swift */; };
@@ -64,8 +59,6 @@
 		07FD1A5F2EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A002EED629A00CBC0EE /* NoteRepositoryProtocol.swift */; };
 		07FD1A602EED629A00CBC0EE /* FocusSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F82EED629A00CBC0EE /* FocusSession.swift */; };
 		07FD1A612EED629A00CBC0EE /* DataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EC2EED629A00CBC0EE /* DataContainer.swift */; };
-		07FD1A622EED629A00CBC0EE /* MacTaskListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E72EED629A00CBC0EE /* MacTaskListView.swift */; };
-		07FD1A642EED629A00CBC0EE /* MacCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E32EED629A00CBC0EE /* MacCategoryView.swift */; };
 		07FD1A652EED629A00CBC0EE /* SyncStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FB2EED629A00CBC0EE /* SyncStatus.swift */; };
 		07FD1A692EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A012EED629A00CBC0EE /* TaskRepositoryProtocol.swift */; };
 		07FD1A6A2EED629A00CBC0EE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A072EED629A00CBC0EE /* Date+Extensions.swift */; };
@@ -73,30 +66,34 @@
 		07FD1A6C2EED629A00CBC0EE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A052EED629A00CBC0EE /* Theme.swift */; };
 		07FD1A6E2EED629A00CBC0EE /* DailySummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F72EED629A00CBC0EE /* DailySummary.swift */; };
 		07FD1A6F2EED629A00CBC0EE /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A082EED629A00CBC0EE /* String+Extensions.swift */; };
-		07FD1A702EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EA2EED629A00CBC0EE /* FlowTaskMacApp.swift */; };
 		07FD1A712EED629A00CBC0EE /* FlowTaskError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FE2EED629A00CBC0EE /* FlowTaskError.swift */; };
 		07FD1A732EED629A00CBC0EE /* TaskStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19ED2EED629A00CBC0EE /* TaskStorage.swift */; };
 		07FD1A742EED629A00CBC0EE /* NoteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19EF2EED629A00CBC0EE /* NoteRepository.swift */; };
-		07FD1A752EED629A00CBC0EE /* FloatingWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19E52EED629A00CBC0EE /* FloatingWindowView.swift */; };
 		07FD1A762EED629A00CBC0EE /* FocusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F32EED629A00CBC0EE /* FocusService.swift */; };
 		07FD1A782EED629A00CBC0EE /* TaskValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1A0A2EED629A00CBC0EE /* TaskValidator.swift */; };
-		07FD1A7A2EED629A00CBC0EE /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F42EED629A00CBC0EE /* NotificationService.swift */; };
 		07FD1A7B2EED629A00CBC0EE /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FC2EED629A00CBC0EE /* Task.swift */; };
-		07FD1AA82EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA52EEDBA7600CBC0EE /* FloatingBallView.swift */; };
-		07FD1AA92EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA42EEDBA7600CBC0EE /* DesktopStickyWindow.swift */; };
-		07FD1AAA2EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA62EEDBA7600CBC0EE /* StickyWindowViewModel.swift */; };
 		07FD1AAB2EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA52EEDBA7600CBC0EE /* FloatingBallView.swift */; };
 		07FD1AAC2EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA42EEDBA7600CBC0EE /* DesktopStickyWindow.swift */; };
 		07FD1AAD2EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA62EEDBA7600CBC0EE /* StickyWindowViewModel.swift */; };
-		07FD1AAE2EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA52EEDBA7600CBC0EE /* FloatingBallView.swift */; };
-		07FD1AAF2EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA42EEDBA7600CBC0EE /* DesktopStickyWindow.swift */; };
-		07FD1AB02EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AA62EEDBA7600CBC0EE /* StickyWindowViewModel.swift */; };
 		07FD1AB32EF0A00000CBC0EE /* MacNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AB12EF0A00000CBC0EE /* MacNotesView.swift */; };
 		07FD1AC02EF1200000CBC0EE /* MarkdownEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AC12EF1200000CBC0EE /* MarkdownEditor.swift */; };
 		07FD1AC22EF1300000CBC0EE /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AC32EF1300000CBC0EE /* TaskListViewModel.swift */; };
 		07FD1AC52EF1400000CBC0EE /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AC62EF1400000CBC0EE /* SettingsManager.swift */; };
 		07FD1AC72EF1400000CBC0EE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AC82EF1400000CBC0EE /* SettingsView.swift */; };
 		07FD1AD02EF1500000CBC0EE /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AD12EF1500000CBC0EE /* StatisticsView.swift */; };
+		07FD1AE52F04000000CBC0EE /* SwiftJSBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AE22F04000000CBC0EE /* SwiftJSBridge.swift */; };
+		07FD1AFD2F08000000CBC0EE /* ExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AFC2F08000000CBC0EE /* ExportManager.swift */; };
+		07FD1AFE2F09000000CBC0EE /* MarkdownExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1AFF2F09000000CBC0EE /* MarkdownExporter.swift */; };
+		07FD1B002F0A000000CBC0EE /* ImageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B012F0A000000CBC0EE /* ImageHandler.swift */; };
+		07FD1B022F0B000000CBC0EE /* MuyaModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B032F0B000000CBC0EE /* MuyaModels.swift */; };
+		07FD1B042F0B000000CBC0EE /* MuyaError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B052F0B000000CBC0EE /* MuyaError.swift */; };
+		07FD1B062F0B000000CBC0EE /* MuyaBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B072F0B000000CBC0EE /* MuyaBridge.swift */; };
+		07FD1B082F0B000000CBC0EE /* MuyaWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B092F0B000000CBC0EE /* MuyaWebView.swift */; };
+		07FD1B0A2F0B000000CBC0EE /* MuyaToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B0B2F0B000000CBC0EE /* MuyaToolbar.swift */; };
+		07FD1B0C2F0B000000CBC0EE /* MuyaContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B0D2F0B000000CBC0EE /* MuyaContextMenu.swift */; };
+		07FD1B0E2F0B000000CBC0EE /* MuyaEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B0F2F0B000000CBC0EE /* MuyaEditorView.swift */; };
+		07FD1B102F0B000000CBC0EE /* Muya in Resources */ = {isa = PBXBuildFile; fileRef = 07FD1B112F0B000000CBC0EE /* Muya */; };
+		07FD1B132F0C000000CBC0EE /* MuyaURLSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B142F0C000000CBC0EE /* MuyaURLSchemeHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -154,6 +151,19 @@
 		07FD1AC62EF1400000CBC0EE /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		07FD1AC82EF1400000CBC0EE /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		07FD1AD12EF1500000CBC0EE /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
+		07FD1AE22F04000000CBC0EE /* SwiftJSBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftJSBridge.swift; sourceTree = "<group>"; };
+		07FD1AFC2F08000000CBC0EE /* ExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportManager.swift; sourceTree = "<group>"; };
+		07FD1AFF2F09000000CBC0EE /* MarkdownExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownExporter.swift; sourceTree = "<group>"; };
+		07FD1B012F0A000000CBC0EE /* ImageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHandler.swift; sourceTree = "<group>"; };
+		07FD1B032F0B000000CBC0EE /* MuyaModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuyaModels.swift; sourceTree = "<group>"; };
+		07FD1B052F0B000000CBC0EE /* MuyaError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuyaError.swift; sourceTree = "<group>"; };
+		07FD1B072F0B000000CBC0EE /* MuyaBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuyaBridge.swift; sourceTree = "<group>"; };
+		07FD1B092F0B000000CBC0EE /* MuyaWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuyaWebView.swift; sourceTree = "<group>"; };
+		07FD1B0B2F0B000000CBC0EE /* MuyaToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuyaToolbar.swift; sourceTree = "<group>"; };
+		07FD1B0D2F0B000000CBC0EE /* MuyaContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuyaContextMenu.swift; sourceTree = "<group>"; };
+		07FD1B0F2F0B000000CBC0EE /* MuyaEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuyaEditorView.swift; sourceTree = "<group>"; };
+		07FD1B112F0B000000CBC0EE /* Muya */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Muya; sourceTree = "<group>"; };
+		07FD1B142F0C000000CBC0EE /* MuyaURLSchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuyaURLSchemeHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -261,39 +271,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		07FD1AC92EF1400000CBC0EE /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				07FD1AC62EF1400000CBC0EE /* SettingsManager.swift */,
-				07FD1AC82EF1400000CBC0EE /* SettingsView.swift */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
-		07FD1AD22EF1500000CBC0EE /* Statistics */ = {
-			isa = PBXGroup;
-			children = (
-				07FD1AD12EF1500000CBC0EE /* StatisticsView.swift */,
-			);
-			path = Statistics;
-			sourceTree = "<group>";
-		};
 		07FD19EB2EED629A00CBC0EE /* macOS */ = {
 			isa = PBXGroup;
 			children = (
+				07FD1AF12F05000000CBC0EE /* Resources */,
 				07FD1AC42EF1300000CBC0EE /* ViewModels */,
 				07FD19E92EED629A00CBC0EE /* Views */,
 				07FD19EA2EED629A00CBC0EE /* FlowTaskMacApp.swift */,
 			);
 			path = macOS;
-			sourceTree = "<group>";
-		};
-		07FD1AC42EF1300000CBC0EE /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				07FD1AC32EF1300000CBC0EE /* TaskListViewModel.swift */,
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		07FD19EE2EED629A00CBC0EE /* LocalStorage */ = {
@@ -435,8 +421,53 @@
 			children = (
 				07FD1AB12EF0A00000CBC0EE /* MacNotesView.swift */,
 				07FD1AC12EF1200000CBC0EE /* MarkdownEditor.swift */,
+				07FD1AE22F04000000CBC0EE /* SwiftJSBridge.swift */,
+				07FD1B032F0B000000CBC0EE /* MuyaModels.swift */,
+				07FD1B052F0B000000CBC0EE /* MuyaError.swift */,
+				07FD1B072F0B000000CBC0EE /* MuyaBridge.swift */,
+				07FD1B092F0B000000CBC0EE /* MuyaWebView.swift */,
+				07FD1B142F0C000000CBC0EE /* MuyaURLSchemeHandler.swift */,
+				07FD1B0B2F0B000000CBC0EE /* MuyaToolbar.swift */,
+				07FD1B0D2F0B000000CBC0EE /* MuyaContextMenu.swift */,
+				07FD1B0F2F0B000000CBC0EE /* MuyaEditorView.swift */,
+				07FD1AFC2F08000000CBC0EE /* ExportManager.swift */,
+				07FD1AFF2F09000000CBC0EE /* MarkdownExporter.swift */,
+				07FD1B012F0A000000CBC0EE /* ImageHandler.swift */,
 			);
 			path = Notes;
+			sourceTree = "<group>";
+		};
+		07FD1AC42EF1300000CBC0EE /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1AC32EF1300000CBC0EE /* TaskListViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		07FD1AC92EF1400000CBC0EE /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1AC62EF1400000CBC0EE /* SettingsManager.swift */,
+				07FD1AC82EF1400000CBC0EE /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		07FD1AD22EF1500000CBC0EE /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1AD12EF1500000CBC0EE /* StatisticsView.swift */,
+			);
+			path = Statistics;
+			sourceTree = "<group>";
+		};
+		07FD1AF12F05000000CBC0EE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				07FD1B112F0B000000CBC0EE /* Muya */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -558,6 +589,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07FD1B102F0B000000CBC0EE /* Muya in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,6 +648,18 @@
 				07FD1AAD2EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */,
 				07FD1A302EED629A00CBC0EE /* NotificationService.swift in Sources */,
 				07FD1A312EED629A00CBC0EE /* Task.swift in Sources */,
+				07FD1AE52F04000000CBC0EE /* SwiftJSBridge.swift in Sources */,
+				07FD1AFD2F08000000CBC0EE /* ExportManager.swift in Sources */,
+				07FD1AFE2F09000000CBC0EE /* MarkdownExporter.swift in Sources */,
+				07FD1B002F0A000000CBC0EE /* ImageHandler.swift in Sources */,
+				07FD1B022F0B000000CBC0EE /* MuyaModels.swift in Sources */,
+				07FD1B042F0B000000CBC0EE /* MuyaError.swift in Sources */,
+				07FD1B062F0B000000CBC0EE /* MuyaBridge.swift in Sources */,
+				07FD1B082F0B000000CBC0EE /* MuyaWebView.swift in Sources */,
+				07FD1B132F0C000000CBC0EE /* MuyaURLSchemeHandler.swift in Sources */,
+				07FD1B0A2F0B000000CBC0EE /* MuyaToolbar.swift in Sources */,
+				07FD1B0C2F0B000000CBC0EE /* MuyaContextMenu.swift in Sources */,
+				07FD1B0E2F0B000000CBC0EE /* MuyaEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -630,8 +674,6 @@
 				07FD1A3A2EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */,
 				07FD1A3B2EED629A00CBC0EE /* FocusSession.swift in Sources */,
 				07FD1A3C2EED629A00CBC0EE /* DataContainer.swift in Sources */,
-				07FD1A3D2EED629A00CBC0EE /* MacTaskListView.swift in Sources */,
-				07FD1A3F2EED629A00CBC0EE /* MacCategoryView.swift in Sources */,
 				07FD1A402EED629A00CBC0EE /* SyncStatus.swift in Sources */,
 				07FD1A442EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */,
 				07FD1A452EED629A00CBC0EE /* Date+Extensions.swift in Sources */,
@@ -639,17 +681,11 @@
 				07FD1A472EED629A00CBC0EE /* Theme.swift in Sources */,
 				07FD1A492EED629A00CBC0EE /* DailySummary.swift in Sources */,
 				07FD1A4A2EED629A00CBC0EE /* String+Extensions.swift in Sources */,
-				07FD1A4B2EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */,
 				07FD1A4C2EED629A00CBC0EE /* FlowTaskError.swift in Sources */,
 				07FD1A4E2EED629A00CBC0EE /* TaskStorage.swift in Sources */,
 				07FD1A4F2EED629A00CBC0EE /* NoteRepository.swift in Sources */,
-				07FD1A502EED629A00CBC0EE /* FloatingWindowView.swift in Sources */,
 				07FD1A512EED629A00CBC0EE /* FocusService.swift in Sources */,
 				07FD1A532EED629A00CBC0EE /* TaskValidator.swift in Sources */,
-				07FD1AAE2EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */,
-				07FD1AAF2EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */,
-				07FD1AB02EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */,
-				07FD1A552EED629A00CBC0EE /* NotificationService.swift in Sources */,
 				07FD1A562EED629A00CBC0EE /* Task.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -665,8 +701,6 @@
 				07FD1A5F2EED629A00CBC0EE /* NoteRepositoryProtocol.swift in Sources */,
 				07FD1A602EED629A00CBC0EE /* FocusSession.swift in Sources */,
 				07FD1A612EED629A00CBC0EE /* DataContainer.swift in Sources */,
-				07FD1A622EED629A00CBC0EE /* MacTaskListView.swift in Sources */,
-				07FD1A642EED629A00CBC0EE /* MacCategoryView.swift in Sources */,
 				07FD1A652EED629A00CBC0EE /* SyncStatus.swift in Sources */,
 				07FD1A692EED629A00CBC0EE /* TaskRepositoryProtocol.swift in Sources */,
 				07FD1A6A2EED629A00CBC0EE /* Date+Extensions.swift in Sources */,
@@ -674,17 +708,11 @@
 				07FD1A6C2EED629A00CBC0EE /* Theme.swift in Sources */,
 				07FD1A6E2EED629A00CBC0EE /* DailySummary.swift in Sources */,
 				07FD1A6F2EED629A00CBC0EE /* String+Extensions.swift in Sources */,
-				07FD1A702EED629A00CBC0EE /* FlowTaskMacApp.swift in Sources */,
 				07FD1A712EED629A00CBC0EE /* FlowTaskError.swift in Sources */,
 				07FD1A732EED629A00CBC0EE /* TaskStorage.swift in Sources */,
 				07FD1A742EED629A00CBC0EE /* NoteRepository.swift in Sources */,
-				07FD1A752EED629A00CBC0EE /* FloatingWindowView.swift in Sources */,
 				07FD1A762EED629A00CBC0EE /* FocusService.swift in Sources */,
 				07FD1A782EED629A00CBC0EE /* TaskValidator.swift in Sources */,
-				07FD1AA82EEDBA7600CBC0EE /* FloatingBallView.swift in Sources */,
-				07FD1AA92EEDBA7600CBC0EE /* DesktopStickyWindow.swift in Sources */,
-				07FD1AAA2EEDBA7600CBC0EE /* StickyWindowViewModel.swift in Sources */,
-				07FD1A7A2EED629A00CBC0EE /* NotificationService.swift in Sources */,
 				07FD1A7B2EED629A00CBC0EE /* Task.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -830,11 +858,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_OUTGOING_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -876,11 +903,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 87NDQ6Q8C7;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_OUTGOING_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
