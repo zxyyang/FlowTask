@@ -483,6 +483,7 @@ struct MainContentView: View {
                         sidebarItem(tab: .today, title: "今日", systemImage: "sun.max")
                         sidebarItem(tab: .tasks, title: "所有任务", systemImage: "list.bullet")
                         sidebarItem(tab: .notes, title: "笔记", systemImage: "doc.text")
+                        sidebarItem(tab: .json, title: "JSON", systemImage: "curlybraces")
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
@@ -577,6 +578,8 @@ struct MainContentView: View {
             MacNotesView()
         case .statistics:
             StatisticsView()
+        case .json:
+            JSONEditorView()
         }
     }
 
@@ -620,7 +623,7 @@ struct MainContentView: View {
 }
 
 enum NavigationTab: Hashable {
-    case tasks, today, notes, statistics
+    case tasks, today, notes, statistics, json
 }
 
 private struct FixedSidebarColumnWidth: ViewModifier {

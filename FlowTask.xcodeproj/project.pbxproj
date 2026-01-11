@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07FD1B202F0D000000CBC0EE /* JSONEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD1B212F0D000000CBC0EE /* JSONEditorView.swift */; };
 		07FD1A0E2EED629A00CBC0EE /* DailySummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F22EED629A00CBC0EE /* DailySummaryService.swift */; };
 		07FD1A112EED629A00CBC0EE /* Subtask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19FA2EED629A00CBC0EE /* Subtask.swift */; };
 		07FD1A122EED629A00CBC0EE /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FD19F02EED629A00CBC0EE /* TaskRepository.swift */; };
@@ -114,6 +115,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07FD1B212F0D000000CBC0EE /* JSONEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONEditorView.swift; sourceTree = "<group>"; };
 		07FD19A02EED61F300CBC0EE /* FlowTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FD19AF2EED61F400CBC0EE /* FlowTaskTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowTaskTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FD19B92EED61F400CBC0EE /* FlowTaskUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowTaskUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -260,6 +262,7 @@
 		07FD19E92EED629A00CBC0EE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				07FD1B212F0D000000CBC0EE /* JSONEditorView.swift */,
 				07FD1AD22EF1500000CBC0EE /* Statistics */,
 				07FD1AC92EF1400000CBC0EE /* Settings */,
 				07FD1AB22EF0A00000CBC0EE /* Notes */,
@@ -614,6 +617,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07FD1B202F0D000000CBC0EE /* JSONEditorView.swift in Sources */,
 				07FD1AD02EF1500000CBC0EE /* StatisticsView.swift in Sources */,
 				07FD1AC22EF1300000CBC0EE /* TaskListViewModel.swift in Sources */,
 				07FD1AC52EF1400000CBC0EE /* SettingsManager.swift in Sources */,
