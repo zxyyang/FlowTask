@@ -2012,19 +2012,23 @@ struct AboutSettingsContent: View {
             
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
-                    // App 图标
+                    // App 图标 - 灰白色毛玻璃底 + 灰黑色对号
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(LinearGradient(
-                                colors: [Color.blue, Color.blue.opacity(0.7)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ))
+                            .fill(.ultraThinMaterial)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color(white: 0.96, opacity: 0.8))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color(white: 0.86, opacity: 0.6), lineWidth: 1)
+                            )
                             .frame(width: 64, height: 64)
                         
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 32))
-                            .foregroundColor(.white)
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 28, weight: .semibold))
+                            .foregroundColor(Color(white: 0.24))
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
