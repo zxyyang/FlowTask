@@ -30,6 +30,7 @@
 ## 📖 简介
 
 **FlowTask** 是一款专为 macOS 设计的原生任务管理与笔记应用，采用 SwiftUI 和 SwiftData 构建，提供流畅的用户体验和强大的功能。无论是日常待办事项管理、Markdown 笔记编写，还是 JSON 数据处理，FlowTask 都能满足您的需求。
+还拥有和Typora一样的所见即所得markdown功能
 
 ### 🎯 设计理念
 
@@ -101,17 +102,19 @@
 
 ## � 截图预览
 
-<!-- 
-截图占位区域 - 请将截图放入 docs/screenshots/ 文件夹
+<img width="1322" height="738" alt="image" src="https://github.com/user-attachments/assets/b693a1e4-c9b8-4a36-be84-5482bd56edc3" />
+<img width="1322" height="738" alt="image" src="https://github.com/user-attachments/assets/dc3aca76-28d3-49ca-b7a6-63660f736fa2" />
+<img width="1322" height="738" alt="image" src="https://github.com/user-attachments/assets/231388bb-9c2c-41e6-ae03-d158fa81379a" />
 
-建议截图：
-- 主界面 (任务列表)
-- 笔记编辑器
-- 统计面板
-- JSON 编辑器
-- 设置界面
-- 菜单栏/悬浮球
--->
+<img width="1548" height="914" alt="image" src="https://github.com/user-attachments/assets/da40cb71-acc8-4fbd-a54a-ef19460dc41b" />
+<img width="1548" height="914" alt="image" src="https://github.com/user-attachments/assets/f672b847-703e-4d79-897f-b49c486180aa" />
+<img width="736" height="586" alt="image" src="https://github.com/user-attachments/assets/86b877aa-b4f3-4095-8108-a5c9e5b49a76" />
+<img width="436" height="533" alt="image" src="https://github.com/user-attachments/assets/aea868f2-8352-49eb-bef8-01de59cabfad" />
+<img width="1548" height="914" alt="image" src="https://github.com/user-attachments/assets/127f49b9-d16e-45ce-8a11-4b7d661254c5" />
+<img width="1548" height="914" alt="image" src="https://github.com/user-attachments/assets/2ff1d0a1-b292-4aba-84b5-9d4156467428" />
+
+<img width="1548" height="914" alt="image" src="https://github.com/user-attachments/assets/cc99c11c-9fbf-436a-8af0-869fe5ed4a3c" />
+
 
 <p align="center">
   <i>📷 截图即将添加...</i>
