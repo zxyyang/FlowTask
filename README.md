@@ -30,7 +30,12 @@
 ## 📖 简介
 
 **FlowTask** 是一款专为 macOS 设计的原生任务管理与笔记应用，采用 SwiftUI 和 SwiftData 构建，提供流畅的用户体验和强大的功能。无论是日常待办事项管理、Markdown 笔记编写，还是 JSON 数据处理，FlowTask 都能满足您的需求。
-还拥有和Typora一样的所见即所得markdown功能
+
+- 拥有和Typora一样的所见即所得markdown功能
+- 一键记录等超便捷todo记录，子任务处理
+- 自定义提醒规则
+- 高度自定义UI、导航栏、桌面贴图，icon等
+- 超现代JSON处理，支持分屏
 
 ### 🎯 设计理念
 
