@@ -24,19 +24,13 @@ class AppGlobal {
         print("[AppGlobal-v3] 收到打开主窗口请求 - \(Date())")
         NSApp.activate(ignoringOtherApps: true)
         
-        // 1. 严格单例检查：首先查找是否已有可见或最小化的标准主窗口
-        // 这能防止重复创建，也解决了 "点击 Dock 图标时打开新窗口" 的问题
+        // 1. 严格单例检查：通过 window identifier 查找主窗口
+        // SwiftUI 的 WindowGroup(id: "main") 会自动设置窗口的 identifier
         let existingWindow = NSApp.windows.first { window in
-            // 排除条件：
-            // 1. 必须是标准窗口 (titled)
-            // 2. 不能是面板 (NSPanel)
-            // 3. 不能是状态栏窗口
-            // 4. 必须能成为 Key Window
-            return window.styleMask.contains(.titled) &&
-                   !window.styleMask.contains(.nonactivatingPanel) &&
-                   !(window is NSPanel) &&
-                   window.className != "NSStatusBarWindow" &&
-                   window.title.count > 0 // 通常主窗口都有标题 "FlowTask"
+            // 通过 identifier 精确匹配主窗口
+            window.identifier?.rawValue.contains("main") == true &&
+            window.styleMask.contains(.titled) &&
+            !(window is NSPanel)
         }
         
         if let window = existingWindow {
