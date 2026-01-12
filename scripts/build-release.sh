@@ -5,6 +5,11 @@
 
 set -e
 
+# 切换到项目根目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_ROOT"
+
 # 颜色定义
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -57,7 +62,7 @@ xcodebuild archive \
     CODE_SIGN_IDENTITY="-" \
     CODE_SIGNING_REQUIRED=NO \
     CODE_SIGNING_ALLOWED=NO \
-    | xcpretty || true
+    | xcpretty 2>/dev/null || true
 
 # 导出 App
 echo -e "${YELLOW}[3/5] 导出应用...${NC}"
