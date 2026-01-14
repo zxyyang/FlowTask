@@ -375,6 +375,12 @@ struct DesktopStickyWindowView: View {
                         },
                         onAddSubtask: { title in
                             SharedDataManager.shared.addSubtask(to: task, title: title)
+                        },
+                        onDeleteSubtask: { subtask in
+                            SharedDataManager.shared.deleteSubtask(from: task, subtask: subtask)
+                        },
+                        onUpdateTask: { updatedTask in
+                            SharedDataManager.shared.updateTask(updatedTask)
                         }
                     )
                     .opacity(animateList ? 1 : 0)
@@ -501,10 +507,23 @@ struct StickyTaskRow: View {
     let onDelete: () -> Void
     var onToggleSubtask: ((Subtask) -> Void)? = nil
     var onAddSubtask: ((String) -> Void)? = nil
+    var onDeleteSubtask: ((Subtask) -> Void)? = nil
+    var onUpdateTask: ((FlowTask) -> Void)? = nil
     @State private var isHovering = false
     @State private var isExpanded = false
     @State private var showAddSubtask = false
     @State private var newSubtaskTitle = ""
+    @State private var hoveringSubtaskId: UUID? = nil
+    
+    // 任务标题编辑状态
+    @State private var isEditingTitle = false
+    @State private var editingTitle = ""
+    @SwiftUI.FocusState private var isTitleFocused: Bool
+    
+    // 子任务编辑状态
+    @State private var editingSubtaskId: UUID? = nil
+    @State private var editingSubtaskTitle = ""
+    @SwiftUI.FocusState private var isSubtaskFocused: Bool
     
     var body: some View {
         ZStack(alignment: .trailing) {
@@ -534,11 +553,36 @@ struct StickyTaskRow: View {
                     
                     // 任务内容区域（可点击展开）
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(task.title)
-                            .font(.system(size: 13))
-                            .foregroundColor(task.isCompleted ? .secondary : .primary)
-                            .strikethrough(task.isCompleted)
-                            .lineLimit(2)
+                        // 任务标题 - 支持双击编辑
+                        if isEditingTitle {
+                            TextField("任务标题", text: $editingTitle)
+                                .textFieldStyle(.plain)
+                                .font(.system(size: 13))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 4)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(Color(.textBackgroundColor))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 4)
+                                                .stroke(Color.accentColor, lineWidth: 1)
+                                        )
+                                )
+                                .focused($isTitleFocused)
+                                .onSubmit {
+                                    saveTaskTitle()
+                                }
+                                .onExitCommand {
+                                    isEditingTitle = false
+                                    editingTitle = ""
+                                }
+                        } else {
+                            Text(task.title)
+                                .font(.system(size: 13))
+                                .foregroundColor(task.isCompleted ? .secondary : .primary)
+                                .strikethrough(task.isCompleted)
+                                .lineLimit(2)
+                        }
                         
                         HStack(spacing: 8) {
                             if let dueDate = task.dueDate {
@@ -581,7 +625,14 @@ struct StickyTaskRow: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .contentShape(Rectangle())
-                    .onTapGesture {
+                    .onTapGesture(count: 2) {
+                        // 双击直接编辑标题
+                        editingTitle = task.title
+                        isEditingTitle = true
+                        isTitleFocused = true
+                    }
+                    .onTapGesture(count: 1) {
+                        // 单击展开/收起子任务
                         if !task.subtasks.isEmpty || showAddSubtask {
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 isExpanded.toggle()
@@ -622,17 +673,76 @@ struct StickyTaskRow: View {
                                     .buttonStyle(.plain)
                                     .help(subtask.isCompleted ? "标记为未完成" : "标记为已完成")
                                     
-                                    Text(subtask.title)
-                                        .font(.system(size: 12))
-                                        .foregroundColor(subtask.isCompleted ? .secondary : .primary)
-                                        .strikethrough(subtask.isCompleted)
-                                        .lineLimit(1)
+                                    // 子任务标题 - 支持双击编辑
+                                    if editingSubtaskId == subtask.id {
+                                        TextField("子任务标题", text: $editingSubtaskTitle)
+                                            .textFieldStyle(.plain)
+                                            .font(.system(size: 12))
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 3)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 4)
+                                                    .fill(Color(.textBackgroundColor))
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 4)
+                                                            .stroke(Color.accentColor, lineWidth: 1)
+                                                    )
+                                            )
+                                            .focused($isSubtaskFocused)
+                                            .onSubmit {
+                                                saveSubtaskTitle(subtaskId: subtask.id)
+                                            }
+                                            .onExitCommand {
+                                                editingSubtaskId = nil
+                                                editingSubtaskTitle = ""
+                                            }
+                                    } else {
+                                        Text(subtask.title)
+                                            .font(.system(size: 12))
+                                            .foregroundColor(subtask.isCompleted ? .secondary : .primary)
+                                            .strikethrough(subtask.isCompleted)
+                                            .lineLimit(1)
+                                            .onTapGesture(count: 2) {
+                                                editingSubtaskId = subtask.id
+                                                editingSubtaskTitle = subtask.title
+                                                isSubtaskFocused = true
+                                            }
+                                    }
                                     
                                     Spacer()
+                                    
+                                    // 悬浮时显示删除按钮
+                                    if hoveringSubtaskId == subtask.id {
+                                        Button {
+                                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                                onDeleteSubtask?(subtask)
+                                            }
+                                        } label: {
+                                            Image(systemName: "xmark.circle.fill")
+                                                .font(.system(size: 12))
+                                                .foregroundColor(.secondary)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .help("删除子任务")
+                                    }
                                 }
                                 .padding(.leading, 40)
                                 .padding(.trailing, 12)
                                 .padding(.vertical, 4)
+                                .onHover { hovering in
+                                    withAnimation(.easeInOut(duration: 0.1)) {
+                                        hoveringSubtaskId = hovering ? subtask.id : nil
+                                    }
+                                }
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                            onDeleteSubtask?(subtask)
+                                        }
+                                    } label: {
+                                        Label("删除子任务", systemImage: "trash")
+                                    }
+                                }
                             }
                         }
                         
@@ -669,8 +779,8 @@ struct StickyTaskRow: View {
                 }
             }
             
-            // 悬浮时右侧的毛玻璃操作区
-            if isHovering {
+            // 悬浮时右侧的毛玻璃操作区 - 只在主任务行显示，不展开子任务时
+            if isHovering && !isExpanded {
                 HStack(spacing: 12) {
                     Button {
                         withAnimation {
@@ -704,11 +814,52 @@ struct StickyTaskRow: View {
                 .padding(.trailing, 8)
                 .transition(.opacity.combined(with: .scale(scale: 0.9)))
             }
+            
+            // 展开子任务时，操作按钮显示在主任务行右侧
+            if isHovering && isExpanded {
+                VStack {
+                    HStack(spacing: 8) {
+                        Button {
+                            withAnimation {
+                                showAddSubtask = true
+                            }
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(.primary)
+                        }
+                        .buttonStyle(.plain)
+                        .help("添加子任务")
+                        
+                        Button {
+                            onDelete()
+                        } label: {
+                            Image(systemName: "trash")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(.red.opacity(0.8))
+                        }
+                        .buttonStyle(.plain)
+                        .help("删除任务")
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(.ultraThinMaterial)
+                    )
+                    .padding(.top, 10)
+                    .padding(.trailing, 8)
+                    
+                    Spacer()
+                }
+                .transition(.opacity.combined(with: .scale(scale: 0.9)))
+            }
         }
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.clear)
         )
+        .contentShape(Rectangle()) // 确保整个区域（包括 ZStack 所有层）都能检测 hover
         .padding(.horizontal, 8)
         .padding(.vertical, 2)
         .onHover { hovering in
@@ -748,6 +899,32 @@ struct StickyTaskRow: View {
         onAddSubtask?(trimmed)
         newSubtaskTitle = ""
         showAddSubtask = false
+    }
+    
+    private func saveTaskTitle() {
+        let trimmed = editingTitle.trimmingCharacters(in: .whitespaces)
+        if !trimmed.isEmpty && trimmed != task.title {
+            var updated = task
+            updated.title = trimmed
+            onUpdateTask?(updated)
+        }
+        isEditingTitle = false
+        editingTitle = ""
+    }
+    
+    private func saveSubtaskTitle(subtaskId: UUID) {
+        let trimmed = editingSubtaskTitle.trimmingCharacters(in: .whitespaces)
+        if !trimmed.isEmpty {
+            var updated = task
+            if let idx = updated.subtasks.firstIndex(where: { $0.id == subtaskId }) {
+                if updated.subtasks[idx].title != trimmed {
+                    updated.subtasks[idx].title = trimmed
+                    onUpdateTask?(updated)
+                }
+            }
+        }
+        editingSubtaskId = nil
+        editingSubtaskTitle = ""
     }
 }
 

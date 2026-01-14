@@ -449,12 +449,12 @@ struct CursorPosition: Codable, Equatable {
 // MARK: - SearchOptions
 
 /// 搜索选项
-struct SearchOptions: Codable, Equatable {
+struct SearchOptions: Codable, Equatable, Sendable {
     var isCaseSensitive: Bool = false
     var isWholeWord: Bool = false
     var isRegexp: Bool = false
     
-    init(isCaseSensitive: Bool = false, isWholeWord: Bool = false, isRegexp: Bool = false) {
+    nonisolated init(isCaseSensitive: Bool = false, isWholeWord: Bool = false, isRegexp: Bool = false) {
         self.isCaseSensitive = isCaseSensitive
         self.isWholeWord = isWholeWord
         self.isRegexp = isRegexp

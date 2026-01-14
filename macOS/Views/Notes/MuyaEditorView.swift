@@ -38,13 +38,21 @@ struct MuyaEditorView: View {
     /// 是否显示大纲面板
     var showOutline: Bool = false
     
+    /// 外部传入的 bridge（可选）
+    var externalBridge: MuyaBridge?
+    
     // MARK: - State
     
-    @State private var bridge: MuyaBridge = MuyaBridge()
+    @State private var internalBridge: MuyaBridge = MuyaBridge()
     @State private var counterInfo: CounterInfo = CounterInfo(length: 0, type: "text")
     @State private var historyState: HistoryState = .initial
     @State private var outlineItems: [OutlineItem] = []
     @State private var isEditorReady: Bool = false
+    
+    /// 实际使用的 bridge
+    private var bridge: MuyaBridge {
+        externalBridge ?? internalBridge
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -83,7 +91,8 @@ struct MuyaEditorView: View {
                         )
                     },
                     theme: theme,
-                    mode: mode
+                    mode: mode,
+                    externalBridge: bridge
                 )
                 
                 // 大纲面板

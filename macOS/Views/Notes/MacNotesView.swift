@@ -173,6 +173,7 @@ class NotesViewModel: ObservableObject {
         let panel = NSOpenPanel()
         panel.canChooseFiles = false
         panel.canChooseDirectories = true
+        panel.canCreateDirectories = true  // 允许新建文件夹
         panel.allowsMultipleSelection = false
         panel.message = "选择笔记存储目录"
         panel.prompt = "选择"

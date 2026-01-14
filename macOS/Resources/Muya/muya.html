@@ -243,6 +243,85 @@
             background-color: rgba(0, 122, 255, 0.3);
         }
         
+        /* 表格浮动工具栏样式 */
+        #table-toolbar {
+            position: absolute;
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            padding: 2px;
+            z-index: 1000;
+            gap: 1px;
+            flex-wrap: nowrap;
+        }
+        
+        body.dark-theme #table-toolbar {
+            background: rgba(45, 45, 45, 0.95);
+            border-color: #444;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        #table-toolbar.visible {
+            display: flex;
+        }
+        
+        #table-toolbar button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            border-radius: 3px;
+            cursor: pointer;
+            color: #555;
+            font-size: 11px;
+            transition: background-color 0.15s;
+            padding: 0;
+        }
+        
+        body.dark-theme #table-toolbar button {
+            color: #bbb;
+        }
+        
+        #table-toolbar button:hover {
+            background: rgba(0, 122, 255, 0.15);
+            color: #007aff;
+        }
+        
+        body.dark-theme #table-toolbar button:hover {
+            background: rgba(0, 122, 255, 0.25);
+            color: #4da3ff;
+        }
+        
+        #table-toolbar button:active {
+            background: rgba(0, 122, 255, 0.25);
+        }
+        
+        #table-toolbar button svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        #table-toolbar .separator {
+            width: 1px;
+            height: 16px;
+            background: #ddd;
+            margin: 4px 1px;
+        }
+        
+        body.dark-theme #table-toolbar .separator {
+            background: #555;
+        }
+        
+        #table-toolbar button.danger:hover {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+        
         /* 禁用状态 */
         #editor.disabled {
             pointer-events: none;
@@ -332,8 +411,206 @@
     </div>
     <div id="editor"></div>
     
+    <!-- 表格浮动工具栏 -->
+    <div id="table-toolbar">
+        <button id="tb-add-row-above" title="在上方插入行">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 10h16M12 4v6"/>
+            </svg>
+        </button>
+        <button id="tb-add-row-below" title="在下方插入行">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 14h16M12 14v6"/>
+            </svg>
+        </button>
+        <button id="tb-add-col-left" title="在左侧插入列">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 4v16M4 12h6"/>
+            </svg>
+        </button>
+        <button id="tb-add-col-right" title="在右侧插入列">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 4v16M14 12h6"/>
+            </svg>
+        </button>
+        <div class="separator"></div>
+        <button id="tb-delete-row" title="删除当前行">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12h16M8 8l8 8M16 8l-8 8"/>
+            </svg>
+        </button>
+        <button id="tb-delete-col" title="删除当前列">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 4v16M8 8l8 8M16 8l-8 8"/>
+            </svg>
+        </button>
+        <button id="tb-delete-table" title="删除表格" class="danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/>
+            </svg>
+        </button>
+    </div>
+    
     <!-- 先加载桥接脚本 -->
     <script src="muyaBridge.js"></script>
+    
+    <!-- 表格工具栏控制器 -->
+    <script>
+    (function() {
+        const toolbar = document.getElementById('table-toolbar');
+        let currentTable = null;
+        let currentCell = null;
+        let hideTimeout = null;
+        
+        // 显示工具栏 - 渲染在表格内部上方
+        function showToolbar(table, cell) {
+            if (!table || !toolbar) return;
+            
+            currentTable = table;
+            currentCell = cell;
+            
+            // 获取表格和编辑器的位置
+            const tableRect = table.getBoundingClientRect();
+            const editorEl = document.getElementById('editor');
+            const editorRect = editorEl.getBoundingClientRect();
+            const scrollTop = editorEl.scrollTop;
+            
+            // 计算工具栏位置 - 在表格内部右上角
+            const toolbarWidth = 200; // 估算宽度
+            let left = tableRect.right - toolbarWidth - 5 - editorRect.left;
+            let top = tableRect.top - editorRect.top + scrollTop + 5;
+            
+            // 确保不超出边界
+            if (left < 5) left = 5;
+            if (left + toolbarWidth > editorRect.width - 10) {
+                left = editorRect.width - toolbarWidth - 10;
+            }
+            
+            toolbar.style.left = left + 'px';
+            toolbar.style.top = top + 'px';
+            toolbar.classList.add('visible');
+            
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+            }
+        }
+        
+        // 隐藏工具栏
+        function hideToolbar() {
+            hideTimeout = setTimeout(() => {
+                toolbar.classList.remove('visible');
+                currentTable = null;
+                currentCell = null;
+            }, 200);
+        }
+        
+        // 取消隐藏
+        function cancelHide() {
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+            }
+        }
+        
+        // 获取当前单元格的行列索引
+        function getCellIndex(cell) {
+            if (!cell) return { row: -1, col: -1 };
+            const row = cell.parentElement;
+            const table = row?.parentElement?.parentElement || row?.parentElement;
+            if (!row || !table) return { row: -1, col: -1 };
+            
+            const rows = Array.from(table.querySelectorAll('tr'));
+            const rowIndex = rows.indexOf(row);
+            const cols = Array.from(row.children);
+            const colIndex = cols.indexOf(cell);
+            
+            return { row: rowIndex, col: colIndex };
+        }
+        
+        // 监听表格悬停
+        document.addEventListener('mouseover', (e) => {
+            const cell = e.target.closest('td, th');
+            const table = e.target.closest('table');
+            
+            if (table && cell) {
+                showToolbar(table, cell);
+            }
+        });
+        
+        document.addEventListener('mouseout', (e) => {
+            const table = e.target.closest('table');
+            const toTable = e.relatedTarget?.closest?.('table');
+            const toToolbar = e.relatedTarget?.closest?.('#table-toolbar');
+            
+            if (table && !toTable && !toToolbar) {
+                hideToolbar();
+            }
+        });
+        
+        // 工具栏悬停保持显示
+        toolbar.addEventListener('mouseenter', cancelHide);
+        toolbar.addEventListener('mouseleave', hideToolbar);
+        
+        // 点击单元格更新当前单元格
+        document.addEventListener('click', (e) => {
+            const cell = e.target.closest('td, th');
+            if (cell) {
+                currentCell = cell;
+            }
+        });
+        
+        // 工具栏按钮事件
+        document.getElementById('tb-add-row-above').addEventListener('click', () => {
+            if (currentTable && currentCell && window.muyaBridge) {
+                const { row } = getCellIndex(currentCell);
+                window.muyaBridge.addTableRow(currentTable, row, 'above');
+            }
+        });
+        
+        document.getElementById('tb-add-row-below').addEventListener('click', () => {
+            if (currentTable && currentCell && window.muyaBridge) {
+                const { row } = getCellIndex(currentCell);
+                window.muyaBridge.addTableRow(currentTable, row, 'below');
+            }
+        });
+        
+        document.getElementById('tb-add-col-left').addEventListener('click', () => {
+            if (currentTable && currentCell && window.muyaBridge) {
+                const { col } = getCellIndex(currentCell);
+                window.muyaBridge.addTableColumn(currentTable, col, 'left');
+            }
+        });
+        
+        document.getElementById('tb-add-col-right').addEventListener('click', () => {
+            if (currentTable && currentCell && window.muyaBridge) {
+                const { col } = getCellIndex(currentCell);
+                window.muyaBridge.addTableColumn(currentTable, col, 'right');
+            }
+        });
+        
+        document.getElementById('tb-delete-row').addEventListener('click', () => {
+            if (currentTable && currentCell && window.muyaBridge) {
+                const { row } = getCellIndex(currentCell);
+                window.muyaBridge.deleteTableRow(currentTable, row);
+            }
+        });
+        
+        document.getElementById('tb-delete-col').addEventListener('click', () => {
+            if (currentTable && currentCell && window.muyaBridge) {
+                const { col } = getCellIndex(currentCell);
+                window.muyaBridge.deleteTableColumn(currentTable, col);
+            }
+        });
+        
+        document.getElementById('tb-delete-table').addEventListener('click', () => {
+            if (currentTable && window.muyaBridge) {
+                window.muyaBridge.deleteTable(currentTable);
+                toolbar.classList.remove('visible');
+            }
+        });
+    })();
+    </script>
     
     <!-- 图片加载拦截器 - 解决 WKWebView 自定义 scheme 在 Image() 中不工作的问题 -->
     <script>

@@ -214,10 +214,16 @@ struct MuyaToolbar: View {
         let rowsField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
         rowsField.placeholderString = "行数 (默认 3)"
         rowsField.stringValue = "3"
+        rowsField.bezelStyle = .roundedBezel
+        rowsField.isBordered = true
+        rowsField.isEditable = true
         
         let colsField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 24))
         colsField.placeholderString = "列数 (默认 3)"
         colsField.stringValue = "3"
+        colsField.bezelStyle = .roundedBezel
+        colsField.isBordered = true
+        colsField.isEditable = true
         
         stackView.addArrangedSubview(rowsField)
         stackView.addArrangedSubview(colsField)

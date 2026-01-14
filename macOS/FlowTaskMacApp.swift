@@ -886,6 +886,22 @@ class SharedDataManager: ObservableObject {
         }
     }
     
+    func deleteSubtask(from task: FlowTask, subtask: Subtask) {
+        guard let taskIndex = tasks.firstIndex(where: { $0.id == task.id }) else { return }
+        
+        tasks[taskIndex].subtasks.removeAll { $0.id == subtask.id }
+        tasks[taskIndex].updatedAt = Date()
+        
+        let updatedTask = tasks[taskIndex]
+        lastUpdateTime = Date()
+        
+        if let repo = taskRepository {
+            Task {
+                _ = try? await repo.updateTask(updatedTask)
+            }
+        }
+    }
+    
     func addNote(title: String, content: String) {
         let newNote = Note(title: title, content: content)
         notes.insert(newNote, at: 0)

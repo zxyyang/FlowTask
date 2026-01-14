@@ -88,10 +88,52 @@ struct MacTaskListView: View {
         VStack(spacing: 0) {
             searchToolbar
             Divider()
+            quickAddBar
+            Divider()
             taskListContent
         }
         .frame(minWidth: listMinWidth, idealWidth: listIdealWidth, maxWidth: listIdealWidth)
         .layoutPriority(0)
+    }
+    
+    // MARK: - Quick Add Bar
+    @State private var quickAddTitle = ""
+    
+    private var quickAddBar: some View {
+        HStack(spacing: 8) {
+            TextField("快速添加任务...", text: $quickAddTitle)
+                .textFieldStyle(.plain)
+                .font(.system(size: 13))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color(.textBackgroundColor))
+                )
+                .onSubmit {
+                    quickAddTask()
+                }
+            
+            Button {
+                quickAddTask()
+            } label: {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: 18))
+                    .foregroundColor(.accentColor)
+            }
+            .buttonStyle(.plain)
+            .disabled(quickAddTitle.trimmingCharacters(in: .whitespaces).isEmpty)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+    }
+    
+    private func quickAddTask() {
+        let trimmed = quickAddTitle.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        let newTask = FlowTask(title: trimmed)
+        viewModel.createTask(newTask)
+        quickAddTitle = ""
     }
     
     // MARK: - Search Toolbar
@@ -319,6 +361,15 @@ struct MacTaskDetailView: View {
     let onDelete: () -> Void
     
     @State private var showEditSheet = false
+    @State private var editableTitle: String = ""
+    @State private var isEditingTitle = false
+    @State private var newSubtaskTitle = ""
+    @SwiftUI.FocusState private var isTitleFocused: Bool
+    
+    // 子任务编辑状态
+    @State private var editingSubtaskId: UUID? = nil
+    @State private var editingSubtaskTitle: String = ""
+    @SwiftUI.FocusState private var isSubtaskFocused: Bool
     
     private var timeRemainingText: String? {
         guard let dueDate = task.dueDate, !task.isCompleted else { return nil }
@@ -445,11 +496,32 @@ struct MacTaskDetailView: View {
             .buttonStyle(.plain)
             
             VStack(alignment: .leading, spacing: 6) {
-                Text(task.title)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .strikethrough(task.isCompleted)
-                    .foregroundColor(task.isCompleted ? .secondary : .primary)
+                // 可编辑标题
+                if isEditingTitle {
+                    TextField("任务标题", text: $editableTitle)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .textFieldStyle(.plain)
+                        .focused($isTitleFocused)
+                        .onSubmit {
+                            saveTitle()
+                        }
+                        .onExitCommand {
+                            isEditingTitle = false
+                            editableTitle = task.title
+                        }
+                } else {
+                    Text(task.title)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .strikethrough(task.isCompleted)
+                        .foregroundColor(task.isCompleted ? .secondary : .primary)
+                        .onTapGesture(count: 2) {
+                            editableTitle = task.title
+                            isEditingTitle = true
+                            isTitleFocused = true
+                        }
+                }
                 
                 HStack(spacing: 8) {
                     // 状态标签
@@ -480,6 +552,23 @@ struct MacTaskDetailView: View {
         .padding(16)
         .background(Color(nsColor: .controlBackgroundColor))
         .cornerRadius(12)
+        .onAppear {
+            editableTitle = task.title
+        }
+        .onChange(of: task.id) { _, _ in
+            editableTitle = task.title
+            isEditingTitle = false
+        }
+    }
+    
+    private func saveTitle() {
+        let trimmed = editableTitle.trimmingCharacters(in: .whitespaces)
+        if !trimmed.isEmpty && trimmed != task.title {
+            var updated = task
+            updated.title = trimmed
+            onUpdate(updated)
+        }
+        isEditingTitle = false
     }
     
     // MARK: - Time Info Section
@@ -619,17 +708,43 @@ struct MacTaskDetailView: View {
                             }
                             .buttonStyle(.plain)
                             
-                            Text(subtask.title)
-                                .strikethrough(subtask.isCompleted)
-                                .foregroundColor(subtask.isCompleted ? .secondary : .primary)
+                            // 子任务标题 - 支持双击编辑
+                            if editingSubtaskId == subtask.id {
+                                TextField("子任务标题", text: $editingSubtaskTitle)
+                                    .textFieldStyle(.plain)
+                                    .focused($isSubtaskFocused)
+                                    .onSubmit {
+                                        saveSubtaskTitle(subtaskId: subtask.id)
+                                    }
+                                    .onExitCommand {
+                                        editingSubtaskId = nil
+                                        editingSubtaskTitle = ""
+                                    }
+                            } else {
+                                Text(subtask.title)
+                                    .strikethrough(subtask.isCompleted)
+                                    .foregroundColor(subtask.isCompleted ? .secondary : .primary)
+                                    .onTapGesture(count: 2) {
+                                        editingSubtaskId = subtask.id
+                                        editingSubtaskTitle = subtask.title
+                                        isSubtaskFocused = true
+                                    }
+                            }
                             
                             Spacer()
                             
-                            if subtask.isCompleted {
-                                Image(systemName: "checkmark")
-                                    .font(.caption)
-                                    .foregroundColor(.green)
+                            // 删除按钮
+                            Button {
+                                var updated = task
+                                updated.subtasks.removeAll { $0.id == subtask.id }
+                                onUpdate(updated)
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.secondary.opacity(0.6))
                             }
+                            .buttonStyle(.plain)
+                            .help("删除子任务")
                         }
                         .padding(.vertical, 10)
                         .padding(.horizontal, 12)
@@ -640,10 +755,52 @@ struct MacTaskDetailView: View {
                         }
                     }
                 }
+                
+                // 添加子任务输入框
+                Divider()
+                    .padding(.leading, 42)
+                HStack(spacing: 12) {
+                    Image(systemName: "plus.circle")
+                        .font(.system(size: 18))
+                        .foregroundColor(.accentColor)
+                    
+                    TextField("添加子任务...", text: $newSubtaskTitle)
+                        .textFieldStyle(.plain)
+                        .onSubmit {
+                            addNewSubtask()
+                        }
+                }
+                .padding(.vertical, 10)
+                .padding(.horizontal, 12)
             }
             .background(Color(nsColor: .controlBackgroundColor))
             .cornerRadius(10)
         }
+    }
+    
+    private func addNewSubtask() {
+        let trimmed = newSubtaskTitle.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        var updated = task
+        let newSubtask = Subtask(title: trimmed, orderIndex: updated.subtasks.count)
+        updated.subtasks.append(newSubtask)
+        onUpdate(updated)
+        newSubtaskTitle = ""
+    }
+    
+    private func saveSubtaskTitle(subtaskId: UUID) {
+        let trimmed = editingSubtaskTitle.trimmingCharacters(in: .whitespaces)
+        if !trimmed.isEmpty {
+            var updated = task
+            if let idx = updated.subtasks.firstIndex(where: { $0.id == subtaskId }) {
+                if updated.subtasks[idx].title != trimmed {
+                    updated.subtasks[idx].title = trimmed
+                    onUpdate(updated)
+                }
+            }
+        }
+        editingSubtaskId = nil
+        editingSubtaskTitle = ""
     }
     
     // MARK: - Task Info Section

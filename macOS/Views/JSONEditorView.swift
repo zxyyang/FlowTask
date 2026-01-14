@@ -87,12 +87,27 @@ enum JSONViewMode: String, CaseIterable {
 // MARK: - JSON Parser
 
 struct JSONParser {
+    /// 移除 JSON 字符串中的注释 (// 和 /* */)
+    static func stripComments(_ jsonString: String) -> String {
+        var result = jsonString
+        // 移除单行注释 //
+        if let regex = try? NSRegularExpression(pattern: "//[^\n]*", options: []) {
+            result = regex.stringByReplacingMatches(in: result, options: [], range: NSRange(result.startIndex..., in: result), withTemplate: "")
+        }
+        // 移除多行注释 /* */
+        if let regex = try? NSRegularExpression(pattern: "/\\*[\\s\\S]*?\\*/", options: []) {
+            result = regex.stringByReplacingMatches(in: result, options: [], range: NSRange(result.startIndex..., in: result), withTemplate: "")
+        }
+        return result
+    }
+    
     static func parse(_ jsonString: String) throws -> JSONTreeNode {
-        guard !jsonString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw JSONParserError.emptyInput }
-        guard let data = jsonString.data(using: .utf8) else { throw JSONParserError.invalidEncoding }
+        let cleanedString = stripComments(jsonString)
+        guard !cleanedString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw JSONParserError.emptyInput }
+        guard let data = cleanedString.data(using: .utf8) else { throw JSONParserError.invalidEncoding }
         let jsonObject: Any
         do { jsonObject = try JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed]) }
-        catch let error as NSError { throw JSONParserError.parseError(extractErrorInfo(from: error, in: jsonString)) }
+        catch let error as NSError { throw JSONParserError.parseError(extractErrorInfo(from: error, in: cleanedString)) }
         return convertToTreeNode(jsonObject)
     }
     
@@ -129,10 +144,11 @@ struct JSONParser {
     }
     
     static func validate(_ jsonString: String) -> JSONValidationResult {
-        guard !jsonString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return .invalid(JSONValidationError(message: "输入为空")) }
-        guard let data = jsonString.data(using: .utf8) else { return .invalid(JSONValidationError(message: "无效的字符编码")) }
+        let cleanedString = stripComments(jsonString)
+        guard !cleanedString.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return .invalid(JSONValidationError(message: "输入为空")) }
+        guard let data = cleanedString.data(using: .utf8) else { return .invalid(JSONValidationError(message: "无效的字符编码")) }
         do { _ = try JSONSerialization.jsonObject(with: data, options: [.fragmentsAllowed]); return .valid }
-        catch let error as NSError { return .invalid(extractErrorInfo(from: error, in: jsonString)) }
+        catch let error as NSError { return .invalid(extractErrorInfo(from: error, in: cleanedString)) }
     }
     
     static func format(_ jsonString: String) throws -> String { stringify(try parse(jsonString), pretty: true) }
@@ -540,6 +556,14 @@ struct JSONTextEditorView: NSViewRepresentable {
             let fullRange = NSRange(location: 0, length: text.count)
             attributedString.addAttribute(.font, value: NSFont.monospacedSystemFont(ofSize: 13, weight: .regular), range: fullRange)
             attributedString.addAttribute(.foregroundColor, value: NSColor.labelColor, range: fullRange)
+            
+            // 注释高亮 (// 和 /* */)
+            if let regex = try? NSRegularExpression(pattern: "//[^\n]*") {
+                for match in regex.matches(in: text, range: fullRange) { attributedString.addAttribute(.foregroundColor, value: NSColor.systemGray, range: match.range) }
+            }
+            if let regex = try? NSRegularExpression(pattern: "/\\*[\\s\\S]*?\\*/") {
+                for match in regex.matches(in: text, range: fullRange) { attributedString.addAttribute(.foregroundColor, value: NSColor.systemGray, range: match.range) }
+            }
             
             if let regex = try? NSRegularExpression(pattern: "\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"") {
                 for match in regex.matches(in: text, range: fullRange) { attributedString.addAttribute(.foregroundColor, value: NSColor.systemGreen, range: match.range) }

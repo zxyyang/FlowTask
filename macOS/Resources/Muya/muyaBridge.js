@@ -58,9 +58,11 @@ window.muyaBridge = {
         
         // 历史状态变化
         this.muya.on('stateChange', () => {
+            // 优先使用 editor.history，回退到 muya.history
+            const history = this.muya.editor?.history || this.muya.history;
             this.notifySwift('historyChange', {
-                canUndo: this.muya.history ? this.muya.history.canUndo() : true,
-                canRedo: this.muya.history ? this.muya.history.canRedo() : true
+                canUndo: history ? history.canUndo() : true,
+                canRedo: history ? history.canRedo() : true
             });
         });
         
@@ -583,9 +585,85 @@ window.muyaBridge = {
     format: function(type) {
         if (!this.muya) return false;
         try {
-            this.muya.format(type);
-            return true;
+            const selection = window.getSelection();
+            const selectedText = selection ? selection.toString() : '';
+            
+            // 根据格式类型插入对应的 Markdown 语法
+            let formattedText = '';
+            let cursorOffset = 0; // 光标偏移量
+            
+            switch (type) {
+                case 'bold':
+                    formattedText = selectedText ? `**${selectedText}**` : '**粗体文本**';
+                    cursorOffset = selectedText ? 0 : -2;
+                    break;
+                case 'italic':
+                    formattedText = selectedText ? `*${selectedText}*` : '*斜体文本*';
+                    cursorOffset = selectedText ? 0 : -1;
+                    break;
+                case 'strikethrough':
+                    formattedText = selectedText ? `~~${selectedText}~~` : '~~删除线文本~~';
+                    cursorOffset = selectedText ? 0 : -2;
+                    break;
+                case 'inlineCode':
+                    formattedText = selectedText ? `\`${selectedText}\`` : '`代码`';
+                    cursorOffset = selectedText ? 0 : -1;
+                    break;
+                case 'heading1':
+                    formattedText = `\n# ${selectedText || '标题'}`;
+                    break;
+                case 'heading2':
+                    formattedText = `\n## ${selectedText || '标题'}`;
+                    break;
+                case 'heading3':
+                    formattedText = `\n### ${selectedText || '标题'}`;
+                    break;
+                case 'heading4':
+                    formattedText = `\n#### ${selectedText || '标题'}`;
+                    break;
+                case 'heading5':
+                    formattedText = `\n##### ${selectedText || '标题'}`;
+                    break;
+                case 'heading6':
+                    formattedText = `\n###### ${selectedText || '标题'}`;
+                    break;
+                case 'unorderedList':
+                    formattedText = `\n- ${selectedText || '列表项'}`;
+                    break;
+                case 'orderedList':
+                    formattedText = `\n1. ${selectedText || '列表项'}`;
+                    break;
+                case 'taskList':
+                    formattedText = `\n- [ ] ${selectedText || '任务项'}`;
+                    break;
+                case 'quote':
+                    formattedText = `\n> ${selectedText || '引用文本'}`;
+                    break;
+                case 'horizontalRule':
+                    formattedText = '\n---\n';
+                    break;
+                case 'indent':
+                    formattedText = `    ${selectedText}`;
+                    break;
+                case 'outdent':
+                    // 移除前导空格
+                    formattedText = selectedText.replace(/^(\s{1,4}|\t)/, '');
+                    break;
+                default:
+                    console.warn('[muyaBridge] format: 未知格式类型:', type);
+                    return false;
+            }
+            
+            // 如果有选中文本，先删除它
+            if (selectedText && selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+            }
+            
+            // 插入格式化后的文本
+            return this.insertValue(formattedText);
         } catch (e) {
+            console.error('[muyaBridge] format 失败:', e);
             this.notifySwift('error', { message: '格式化失败: ' + e.message });
             return false;
         }
@@ -702,26 +780,138 @@ window.muyaBridge = {
     insertTable: function(rows, cols) {
         if (!this.muya) return false;
         try {
-            let table = '\n|';
+            console.log('[muyaBridge] insertTable: 开始插入表格', rows, 'x', cols);
+            
+            // 构建表格 Markdown
+            let tableMarkdown = '\n|';
             for (let c = 0; c < cols; c++) {
-                table += ' 列' + (c + 1) + ' |';
+                tableMarkdown += ' 列' + (c + 1) + ' |';
             }
-            table += '\n|';
+            tableMarkdown += '\n|';
             for (let c = 0; c < cols; c++) {
-                table += ' --- |';
+                tableMarkdown += ' --- |';
             }
             for (let r = 0; r < rows - 1; r++) {
-                table += '\n|';
+                tableMarkdown += '\n|';
                 for (let c = 0; c < cols; c++) {
-                    table += '  |';
+                    tableMarkdown += '  |';
                 }
             }
-            table += '\n';
-            this.insertValue(table);
+            tableMarkdown += '\n';
+            
+            // 获取当前选中的块信息
+            const selection = this.muya.editor?.selection;
+            const selectionInfo = selection?.getSelection?.();
+            
+            if (selectionInfo && selectionInfo.anchorBlock) {
+                const anchorBlock = selectionInfo.anchorBlock;
+                console.log('[muyaBridge] insertTable: 当前块类型:', anchorBlock.blockName);
+                
+                // 找到最外层的块（段落级别）
+                let targetBlock = anchorBlock;
+                while (targetBlock.parent && 
+                       targetBlock.parent.blockName !== 'scrollpage' &&
+                       targetBlock.parent.parent) {
+                    targetBlock = targetBlock.parent;
+                }
+                
+                console.log('[muyaBridge] insertTable: 目标块类型:', targetBlock.blockName);
+                
+                // 获取当前块在 scrollPage 中的索引
+                const scrollPage = this.muya.editor?.scrollPage;
+                if (scrollPage) {
+                    const blockIndex = scrollPage.offset(targetBlock);
+                    console.log('[muyaBridge] insertTable: 块索引:', blockIndex);
+                    
+                    // 获取当前 Markdown 内容
+                    const currentContent = this.muya.getMarkdown();
+                    const lines = currentContent.split('\n');
+                    
+                    // 计算插入位置（在当前段落后）
+                    // 遍历 scrollPage 的子块来找到对应的行号
+                    let lineCount = 0;
+                    let insertLineIndex = 0;
+                    
+                    scrollPage.forEach((block, index) => {
+                        if (index <= blockIndex) {
+                            // 获取这个块的 Markdown 行数
+                            const blockState = block.getState?.();
+                            if (blockState) {
+                                const blockMd = this._stateToMarkdown(blockState);
+                                const blockLines = blockMd.split('\n').length;
+                                insertLineIndex = lineCount + blockLines;
+                                lineCount += blockLines;
+                            }
+                        }
+                    });
+                    
+                    // 在计算的位置插入表格
+                    if (insertLineIndex > 0) {
+                        const beforeLines = lines.slice(0, insertLineIndex);
+                        const afterLines = lines.slice(insertLineIndex);
+                        const newContent = beforeLines.join('\n') + tableMarkdown + afterLines.join('\n');
+                        
+                        console.log('[muyaBridge] insertTable: 在行', insertLineIndex, '后插入');
+                        this.muya.setContent(newContent);
+                        this.lastContent = newContent;
+                        this.handleContentChange();
+                        
+                        // 聚焦到编辑器
+                        setTimeout(() => {
+                            this.muya.focus();
+                        }, 100);
+                        
+                        return true;
+                    }
+                }
+            }
+            
+            // 回退方案：追加到末尾
+            console.log('[muyaBridge] insertTable: 使用回退方案，追加到末尾');
+            const currentContent = this.muya.getMarkdown();
+            const newContent = currentContent.trimEnd() + '\n' + tableMarkdown;
+            
+            this.muya.setContent(newContent);
+            this.lastContent = newContent;
+            this.handleContentChange();
+            
+            setTimeout(() => {
+                this.muya.focus();
+            }, 100);
+            
             return true;
         } catch (e) {
+            console.error('[muyaBridge] insertTable 失败:', e);
             this.notifySwift('error', { message: '插入表格失败: ' + e.message });
             return false;
+        }
+    },
+    
+    /**
+     * 将块状态转换为 Markdown（简化版）
+     * @param {object} state - 块状态
+     * @returns {string} Markdown 文本
+     */
+    _stateToMarkdown: function(state) {
+        if (!state) return '';
+        
+        switch (state.name) {
+            case 'paragraph':
+                return state.text || '';
+            case 'heading':
+                const level = state.meta?.level || 1;
+                return '#'.repeat(level) + ' ' + (state.text || '');
+            case 'table':
+                // 表格可能有多行
+                return state.children?.map(row => 
+                    '|' + row.children?.map(cell => ' ' + (cell.text || '') + ' |').join('') || ''
+                ).join('\n') || '';
+            case 'code-block':
+                return '```' + (state.meta?.lang || '') + '\n' + (state.text || '') + '\n```';
+            case 'block-quote':
+                return '> ' + (state.children?.map(c => c.text || '').join('\n> ') || '');
+            default:
+                return state.text || '';
         }
     },
     
@@ -801,7 +991,15 @@ window.muyaBridge = {
         try {
             console.log('[muyaBridge] undo: 执行撤销');
             
-            // 方法1: 使用 Muya 的 history API
+            // 方法1: 使用 Muya editor 的 history API (正确路径)
+            if (this.muya.editor?.history && typeof this.muya.editor.history.undo === 'function') {
+                console.log('[muyaBridge] undo: 使用 muya.editor.history.undo()');
+                this.muya.editor.history.undo();
+                this.handleContentChange();
+                return true;
+            }
+            
+            // 方法2: 使用 Muya 的 history API (旧路径)
             if (this.muya.history && typeof this.muya.history.undo === 'function') {
                 console.log('[muyaBridge] undo: 使用 muya.history.undo()');
                 this.muya.history.undo();
@@ -809,7 +1007,7 @@ window.muyaBridge = {
                 return true;
             }
             
-            // 方法2: 使用 Muya 实例的 undo 方法
+            // 方法3: 使用 Muya 实例的 undo 方法
             if (typeof this.muya.undo === 'function') {
                 console.log('[muyaBridge] undo: 使用 muya.undo()');
                 this.muya.undo();
@@ -817,7 +1015,7 @@ window.muyaBridge = {
                 return true;
             }
             
-            // 方法3: 使用 document.execCommand 作为后备
+            // 方法4: 使用 document.execCommand 作为后备
             console.log('[muyaBridge] undo: 使用 document.execCommand');
             const result = document.execCommand('undo', false, null);
             if (result) {
@@ -852,7 +1050,15 @@ window.muyaBridge = {
         try {
             console.log('[muyaBridge] redo: 执行重做');
             
-            // 方法1: 使用 Muya 的 history API
+            // 方法1: 使用 Muya editor 的 history API (正确路径)
+            if (this.muya.editor?.history && typeof this.muya.editor.history.redo === 'function') {
+                console.log('[muyaBridge] redo: 使用 muya.editor.history.redo()');
+                this.muya.editor.history.redo();
+                this.handleContentChange();
+                return true;
+            }
+            
+            // 方法2: 使用 Muya 的 history API (旧路径)
             if (this.muya.history && typeof this.muya.history.redo === 'function') {
                 console.log('[muyaBridge] redo: 使用 muya.history.redo()');
                 this.muya.history.redo();
@@ -860,7 +1066,7 @@ window.muyaBridge = {
                 return true;
             }
             
-            // 方法2: 使用 Muya 实例的 redo 方法
+            // 方法3: 使用 Muya 实例的 redo 方法
             if (typeof this.muya.redo === 'function') {
                 console.log('[muyaBridge] redo: 使用 muya.redo()');
                 this.muya.redo();
@@ -868,7 +1074,7 @@ window.muyaBridge = {
                 return true;
             }
             
-            // 方法3: 使用 document.execCommand 作为后备
+            // 方法4: 使用 document.execCommand 作为后备
             console.log('[muyaBridge] redo: 使用 document.execCommand');
             const result = document.execCommand('redo', false, null);
             if (result) {
@@ -898,6 +1104,11 @@ window.muyaBridge = {
     canUndo: function() {
         if (!this.muya) return false;
         try {
+            // 优先使用 editor.history (正确路径)
+            if (this.muya.editor?.history && typeof this.muya.editor.history.canUndo === 'function') {
+                return this.muya.editor.history.canUndo();
+            }
+            // 回退到 muya.history (旧路径)
             if (this.muya.history && typeof this.muya.history.canUndo === 'function') {
                 return this.muya.history.canUndo();
             }
@@ -915,6 +1126,11 @@ window.muyaBridge = {
     canRedo: function() {
         if (!this.muya) return false;
         try {
+            // 优先使用 editor.history (正确路径)
+            if (this.muya.editor?.history && typeof this.muya.editor.history.canRedo === 'function') {
+                return this.muya.editor.history.canRedo();
+            }
+            // 回退到 muya.history (旧路径)
             if (this.muya.history && typeof this.muya.history.canRedo === 'function') {
                 return this.muya.history.canRedo();
             }
@@ -1254,5 +1470,298 @@ window.muyaBridge = {
     setLocale: function(locale) {
         // Muya 语言在初始化时设置，运行时切换需要重新初始化
         return true;
+    },
+    
+    // ==================== 表格操作方法 ====================
+    
+    /**
+     * 保存当前状态到历史记录（用于撤销）
+     */
+    _saveToHistory: function() {
+        try {
+            const history = this.muya.editor?.history || this.muya.history;
+            if (history && typeof history.push === 'function') {
+                history.push();
+                console.log('[muyaBridge] _saveToHistory: 已保存到历史记录');
+            }
+        } catch (e) {
+            console.warn('[muyaBridge] _saveToHistory 失败:', e);
+        }
+    },
+    
+    /**
+     * 在指定位置添加表格行
+     * @param {HTMLElement} tableElement - 表格 DOM 元素
+     * @param {number} rowIndex - 当前行索引
+     * @param {string} position - 'above' 或 'below'
+     */
+    addTableRow: function(tableElement, rowIndex, position) {
+        if (!this.muya || !tableElement) return false;
+        try {
+            console.log('[muyaBridge] addTableRow:', rowIndex, position);
+            
+            // 保存到历史记录
+            this._saveToHistory();
+            
+            // 获取表格的 tbody 或直接子元素
+            const tbody = tableElement.querySelector('tbody') || tableElement;
+            const rows = tbody.querySelectorAll('tr');
+            
+            if (rowIndex < 0 || rowIndex >= rows.length) {
+                console.warn('[muyaBridge] addTableRow: 无效的行索引');
+                return false;
+            }
+            
+            const targetRow = rows[rowIndex];
+            const colCount = targetRow.children.length;
+            
+            // 创建新行
+            const newRow = document.createElement('tr');
+            for (let i = 0; i < colCount; i++) {
+                const cell = document.createElement('td');
+                // 添加一个空的 span 或 br 以便编辑
+                cell.innerHTML = '<br>';
+                newRow.appendChild(cell);
+            }
+            
+            // 插入新行
+            if (position === 'above') {
+                targetRow.parentNode.insertBefore(newRow, targetRow);
+            } else {
+                targetRow.parentNode.insertBefore(newRow, targetRow.nextSibling);
+            }
+            
+            // 触发内容变化
+            this.handleContentChange();
+            
+            return true;
+        } catch (e) {
+            console.error('[muyaBridge] addTableRow 失败:', e);
+            return false;
+        }
+    },
+    
+    /**
+     * 在指定位置添加表格列
+     * @param {HTMLElement} tableElement - 表格 DOM 元素
+     * @param {number} colIndex - 当前列索引
+     * @param {string} position - 'left' 或 'right'
+     */
+    addTableColumn: function(tableElement, colIndex, position) {
+        if (!this.muya || !tableElement) return false;
+        try {
+            console.log('[muyaBridge] addTableColumn:', colIndex, position);
+            
+            // 保存到历史记录
+            this._saveToHistory();
+            
+            const rows = tableElement.querySelectorAll('tr');
+            const insertIndex = position === 'left' ? colIndex : colIndex + 1;
+            
+            rows.forEach((row, rowIdx) => {
+                const cells = row.children;
+                const isHeader = rowIdx === 0 || row.querySelector('th');
+                
+                // 创建新单元格
+                const newCell = document.createElement(isHeader ? 'th' : 'td');
+                newCell.innerHTML = '<br>';
+                
+                // 插入单元格
+                if (insertIndex >= cells.length) {
+                    row.appendChild(newCell);
+                } else {
+                    row.insertBefore(newCell, cells[insertIndex]);
+                }
+            });
+            
+            // 触发内容变化
+            this.handleContentChange();
+            
+            return true;
+        } catch (e) {
+            console.error('[muyaBridge] addTableColumn 失败:', e);
+            return false;
+        }
+    },
+    
+    /**
+     * 删除表格行
+     * @param {HTMLElement} tableElement - 表格 DOM 元素
+     * @param {number} rowIndex - 要删除的行索引
+     */
+    deleteTableRow: function(tableElement, rowIndex) {
+        if (!this.muya || !tableElement) return false;
+        try {
+            console.log('[muyaBridge] deleteTableRow:', rowIndex);
+            
+            const rows = tableElement.querySelectorAll('tr');
+            
+            // 不能删除表头行
+            if (rowIndex === 0) {
+                console.warn('[muyaBridge] deleteTableRow: 不能删除表头行');
+                return false;
+            }
+            
+            // 至少保留表头和一行数据
+            if (rows.length <= 2) {
+                console.warn('[muyaBridge] deleteTableRow: 表格至少需要保留表头和一行数据');
+                return false;
+            }
+            
+            if (rowIndex < 0 || rowIndex >= rows.length) {
+                console.warn('[muyaBridge] deleteTableRow: 无效的行索引');
+                return false;
+            }
+            
+            // 保存到历史记录
+            this._saveToHistory();
+            
+            // 删除行
+            rows[rowIndex].remove();
+            
+            // 触发内容变化
+            this.handleContentChange();
+            
+            return true;
+        } catch (e) {
+            console.error('[muyaBridge] deleteTableRow 失败:', e);
+            return false;
+        }
+    },
+    
+    /**
+     * 删除表格列
+     * @param {HTMLElement} tableElement - 表格 DOM 元素
+     * @param {number} colIndex - 要删除的列索引
+     */
+    deleteTableColumn: function(tableElement, colIndex) {
+        if (!this.muya || !tableElement) return false;
+        try {
+            console.log('[muyaBridge] deleteTableColumn:', colIndex);
+            
+            const rows = tableElement.querySelectorAll('tr');
+            if (rows.length === 0) return false;
+            
+            const colCount = rows[0].children.length;
+            
+            // 不能删除最后一列
+            if (colCount <= 1) {
+                console.warn('[muyaBridge] deleteTableColumn: 表格至少需要保留一列');
+                return false;
+            }
+            
+            if (colIndex < 0 || colIndex >= colCount) {
+                console.warn('[muyaBridge] deleteTableColumn: 无效的列索引');
+                return false;
+            }
+            
+            // 保存到历史记录
+            this._saveToHistory();
+            
+            // 删除每行的对应列
+            rows.forEach(row => {
+                const cells = row.children;
+                if (colIndex < cells.length) {
+                    cells[colIndex].remove();
+                }
+            });
+            
+            // 触发内容变化
+            this.handleContentChange();
+            
+            return true;
+        } catch (e) {
+            console.error('[muyaBridge] deleteTableColumn 失败:', e);
+            return false;
+        }
+    },
+    
+    /**
+     * 删除整个表格
+     * @param {HTMLElement} tableElement - 表格 DOM 元素
+     */
+    deleteTable: function(tableElement) {
+        if (!this.muya || !tableElement) return false;
+        try {
+            console.log('[muyaBridge] deleteTable');
+            
+            // 保存到历史记录
+            this._saveToHistory();
+            
+            // 找到表格的父容器（可能是 figure）
+            const figure = tableElement.closest('figure[data-role="table"]');
+            const elementToRemove = figure || tableElement;
+            
+            // 删除表格
+            elementToRemove.remove();
+            
+            // 触发内容变化
+            this.handleContentChange();
+            
+            return true;
+        } catch (e) {
+            console.error('[muyaBridge] deleteTable 失败:', e);
+            return false;
+        }
+    },
+    
+    /**
+     * 在 Markdown 中查找表格位置（保留用于其他用途）
+     * @param {Array} lines - Markdown 行数组
+     * @param {HTMLElement} tableElement - 表格 DOM 元素
+     * @returns {object|null} 表格信息
+     */
+    _findTableInMarkdown: function(lines, tableElement) {
+        // 获取表格的文本内容用于匹配
+        const headerCells = tableElement.querySelectorAll('thead th, tr:first-child th, tr:first-child td');
+        const headerTexts = Array.from(headerCells).map(cell => cell.textContent.trim());
+        
+        console.log('[muyaBridge] _findTableInMarkdown: 表头内容:', headerTexts);
+        
+        // 查找匹配的表格
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            
+            // 检查是否是表格行
+            if (!line.includes('|')) continue;
+            
+            // 检查下一行是否是分隔行
+            if (i + 1 >= lines.length || !lines[i + 1].includes('---')) continue;
+            
+            // 提取表头内容
+            const lineCells = line.split('|').map(s => s.trim()).filter(s => s);
+            
+            // 检查是否匹配
+            if (headerTexts.length > 0 && lineCells.length > 0) {
+                // 简单匹配：检查第一个单元格
+                if (headerTexts[0] && lineCells[0] && 
+                    !lineCells[0].includes(headerTexts[0]) && 
+                    !headerTexts[0].includes(lineCells[0])) {
+                    continue;
+                }
+            }
+            
+            // 找到表格起始行，现在找结束行
+            let endLine = i + 1;
+            for (let j = i + 2; j < lines.length; j++) {
+                if (lines[j].includes('|') && lines[j].trim().startsWith('|')) {
+                    endLine = j;
+                } else {
+                    break;
+                }
+            }
+            
+            const rowCount = endLine - i;
+            const colCount = lineCells.length;
+            
+            return {
+                startLine: i,
+                endLine: endLine,
+                rowCount: rowCount,
+                colCount: colCount
+            };
+        }
+        
+        return null;
     }
 };

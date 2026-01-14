@@ -63,14 +63,23 @@ final class TaskRepository: TaskRepositoryProtocol {
         // 更新属性
         model.title = task.title
         model.isCompleted = task.isCompleted
+        model.startDate = task.startDate  // 修复：添加 startDate 更新
         model.dueDate = task.dueDate
         model.recurringPattern = task.recurringPattern.rawValue
         model.updatedAt = Date()
         
-        // 更新子任务
+        // 更新子任务：先删除旧的，再添加新的
+        // 需要先从 context 中删除旧的 SubtaskModel
+        for oldSubtask in model.subtasks {
+            context.delete(oldSubtask)
+        }
         model.subtasks.removeAll()
+        
+        // 创建新的子任务并插入到 context
         for subtask in task.subtasks {
-            model.subtasks.append(SubtaskModel.from(subtask))
+            let subtaskModel = SubtaskModel.from(subtask)
+            context.insert(subtaskModel)
+            model.subtasks.append(subtaskModel)
         }
         
         try context.save()
@@ -109,7 +118,6 @@ final class TaskRepository: TaskRepositoryProtocol {
     
     // MARK: - Fetch Upcoming Tasks
     func fetchUpcomingTasks(limit: Int) async throws -> [FlowTask] {
-        let now = Date()
         let predicate = #Predicate<TaskModel> { task in
             task.isCompleted == false && task.dueDate != nil
         }

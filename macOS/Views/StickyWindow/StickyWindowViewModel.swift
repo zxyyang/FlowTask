@@ -114,16 +114,13 @@ class DesktopStickyWindowManager: NSObject, ObservableObject {
             print("[StickyWindow] 需要创建新窗口")
             createStickyWindow(on: targetScreen)
             print("[StickyWindow] 窗口创建完成，stickyWindow = \(String(describing: stickyWindow))")
-        } else {
-            print("[StickyWindow] 使用现有窗口，移动到悬浮球所在屏幕")
-            // 窗口已存在，移动到悬浮球所在屏幕
-            if let window = stickyWindow, let screen = targetScreen {
-                let screenFrame = screen.visibleFrame
-                let x = screenFrame.maxX - 320 - 80
-                let y = screenFrame.maxY - 420 - 20
-                print("[StickyWindow] 移动窗口到: (\(x), \(y))")
-                window.setFrameOrigin(NSPoint(x: x, y: y))
-            }
+        }
+        
+        // 根据悬浮球位置计算窗口位置
+        if let window = stickyWindow, let screen = targetScreen {
+            let windowOrigin = calculateStickyWindowPosition(for: window, on: screen)
+            print("[StickyWindow] 移动窗口到悬浮球附近: (\(windowOrigin.x), \(windowOrigin.y))")
+            window.setFrameOrigin(windowOrigin)
         }
         
         guard let window = stickyWindow else {
@@ -247,21 +244,19 @@ class DesktopStickyWindowManager: NSObject, ObservableObject {
         // 设置窗口委托以处理关闭事件
         panel.delegate = self
         
-        // 使用目标屏幕（悬浮球所在屏幕）
+        // 使用目标屏幕（悬浮球所在屏幕）- 初始位置由 showStickyWindow 计算
         if let screen = targetScreen ?? NSScreen.main {
             let screenFrame = screen.visibleFrame
             print("[StickyWindow] 屏幕可见区域: \(screenFrame)")
             
-            // 修正位置计算：macOS 坐标系原点在左下角
+            // 初始位置放在屏幕中央偏右，后续由 showStickyWindow 根据悬浮球位置调整
             let windowWidth: CGFloat = 320
             let windowHeight: CGFloat = 420
-            let padding: CGFloat = 80
             
-            // 将窗口放在右上角（往左移动一些）
-            let x = screenFrame.maxX - windowWidth - padding
-            let y = screenFrame.maxY - windowHeight - 20
+            let x = screenFrame.maxX - windowWidth - 80
+            let y = screenFrame.midY - windowHeight / 2
             
-            print("[StickyWindow] 计算的窗口位置: (\(x), \(y))")
+            print("[StickyWindow] 初始窗口位置: (\(x), \(y))")
             print("[StickyWindow] 窗口大小: \(windowWidth) x \(windowHeight)")
             
             panel.setFrameOrigin(NSPoint(x: x, y: y))
@@ -280,6 +275,45 @@ class DesktopStickyWindowManager: NSObject, ObservableObject {
         print("[StickyWindow] panel.isVisible: \(panel.isVisible)")
         print("[StickyWindow] panel.isReleasedWhenClosed: \(panel.isReleasedWhenClosed)")
     }
+    
+    /// 根据悬浮球位置计算贴图窗口位置
+    private func calculateStickyWindowPosition(for window: NSWindow, on screen: NSScreen) -> NSPoint {
+        let screenFrame = screen.visibleFrame
+        let windowSize = window.frame.size
+        let gap: CGFloat = 10 // 窗口与悬浮球的间距
+        
+        // 如果有悬浮球，根据悬浮球位置计算
+        if let ballWindow = floatingBallWindow {
+            let ballFrame = ballWindow.frame
+            
+            var x: CGFloat
+            var y: CGFloat
+            
+            // 水平位置：悬浮球在屏幕左半边则窗口显示在右侧，反之亦然
+            if ballFrame.midX < screenFrame.midX {
+                // 悬浮球在左侧，窗口显示在悬浮球右边
+                x = ballFrame.maxX + gap
+            } else {
+                // 悬浮球在右侧，窗口显示在悬浮球左边
+                x = ballFrame.minX - windowSize.width - gap
+            }
+            
+            // 垂直位置：窗口中心对齐悬浮球中心
+            y = ballFrame.midY - windowSize.height / 2
+            
+            // 确保窗口在屏幕范围内
+            x = max(screenFrame.minX, min(x, screenFrame.maxX - windowSize.width))
+            y = max(screenFrame.minY, min(y, screenFrame.maxY - windowSize.height))
+            
+            return NSPoint(x: x, y: y)
+        }
+        
+        // 没有悬浮球时，默认显示在屏幕右侧中央
+        let x = screenFrame.maxX - windowSize.width - 80
+        let y = screenFrame.midY - windowSize.height / 2
+        return NSPoint(x: x, y: y)
+    }
+
     
     func showFloatingBall() {
         if floatingBallWindow == nil {

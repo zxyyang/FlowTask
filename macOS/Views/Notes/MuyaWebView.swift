@@ -69,7 +69,24 @@ class EditableWKWebView: WKWebView {
                     })();
                 """) { _, _ in }
                 return true
-            case "a", "c", "v", "x", "b", "i", "u", "k":
+            case "c":
+                // Cmd+C (copy) - 让 Muya 原生处理
+                MuyaLogger.debug("EditableWKWebView: Cmd+C -> copy (native)", category: "webview")
+                return super.performKeyEquivalent(with: event)
+            case "v":
+                // Cmd+V (paste) - 调用自定义粘贴处理
+                MuyaLogger.debug("EditableWKWebView: Cmd+V -> paste", category: "webview")
+                paste(nil)
+                return true
+            case "x":
+                // Cmd+X (cut) - 让 Muya 原生处理
+                MuyaLogger.debug("EditableWKWebView: Cmd+X -> cut (native)", category: "webview")
+                return super.performKeyEquivalent(with: event)
+            case "a":
+                // Cmd+A (select all) - 让 Muya 原生处理
+                MuyaLogger.debug("EditableWKWebView: Cmd+A -> selectAll (native)", category: "webview")
+                return super.performKeyEquivalent(with: event)
+            case "b", "i", "u", "k":
                 return super.performKeyEquivalent(with: event)
             default:
                 break
@@ -92,7 +109,13 @@ class EditableWKWebView: WKWebView {
     }
     
     @objc func copy(_ sender: Any?) {
-        evaluateJavaScript("document.execCommand('copy')") { _, _ in }
+        // 触发浏览器原生复制事件，让 Muya 处理
+        evaluateJavaScript("""
+            (function() {
+                var event = new ClipboardEvent('copy', { bubbles: true, cancelable: true });
+                document.activeElement.dispatchEvent(event);
+            })();
+        """) { _, _ in }
     }
     
     @objc func paste(_ sender: Any?) {
@@ -120,8 +143,13 @@ class EditableWKWebView: WKWebView {
             }
         }
         
-        // 没有图片，执行普通粘贴
-        evaluateJavaScript("document.execCommand('paste')") { _, _ in }
+        // 没有图片，触发浏览器原生粘贴事件
+        evaluateJavaScript("""
+            (function() {
+                var event = new ClipboardEvent('paste', { bubbles: true, cancelable: true });
+                document.activeElement.dispatchEvent(event);
+            })();
+        """) { _, _ in }
     }
     
     /// 处理粘贴的图片
@@ -159,7 +187,13 @@ class EditableWKWebView: WKWebView {
     }
     
     @objc func cut(_ sender: Any?) {
-        evaluateJavaScript("document.execCommand('cut')") { _, _ in }
+        // 触发浏览器原生剪切事件，让 Muya 处理
+        evaluateJavaScript("""
+            (function() {
+                var event = new ClipboardEvent('cut', { bubbles: true, cancelable: true });
+                document.activeElement.dispatchEvent(event);
+            })();
+        """) { _, _ in }
     }
     
     @objc override func selectAll(_ sender: Any?) {
@@ -216,6 +250,9 @@ struct MuyaWebView: NSViewRepresentable {
     
     /// 当前编辑模式
     var mode: MuyaMode
+    
+    /// 外部传入的 bridge（可选，用于工具栏共享）
+    var externalBridge: MuyaBridge?
     
     // MARK: - NSViewRepresentable
     
@@ -486,7 +523,8 @@ class MuyaCoordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         self.parent = parent
         self.currentTheme = parent.theme
         self.currentMode = parent.mode
-        self.bridge = MuyaBridge()
+        // 使用外部传入的 bridge 或创建新的
+        self.bridge = parent.externalBridge ?? MuyaBridge()
         super.init()
         
         setupBridgeCallbacks()
